@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Formulario de Pre-inscripción - La Casita de Mami</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#a7ec6f",
+                        "secondary": "#26B8A2",
+                        "background-light": "#fafaf9",
+                        "background-dark": "#222a34",
+                        "text-main": "#141711",
+                        "text-muted": "#748764"
+                    },
+                    fontFamily: {
+                        "display": ["Be Vietnam Pro", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-main min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-[#e0e5dc] dark:border-gray-700 px-6 py-4">
+<div class="max-w-[1200px] mx-auto flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="size-10 bg-primary rounded-lg flex items-center justify-center text-text-main">
+<span class="material-symbols-outlined text-3xl">child_care</span>
+</div>
+<h1 class="text-xl font-bold tracking-tight">La Casita de Mami</h1>
+</div>
+<nav class="flex items-center gap-6">
+<a class="text-sm font-medium hover:text-secondary transition-colors" href="#">Inicio</a>
+<a class="text-sm font-medium hover:text-secondary transition-colors" href="#">Programas</a>
+<button class="bg-primary hover:bg-primary/90 text-text-main px-5 py-2 rounded-xl text-sm font-bold transition-all shadow-sm">
+                    Contacto
+                </button>
+</nav>
+</div>
+</header>
+<main class="max-w-[1200px] mx-auto px-6 py-10">
+<!-- Page Heading -->
+<div class="mb-10">
+<h2 class="text-4xl md:text-5xl font-black tracking-tight mb-4">Pre-inscripción y Contacto <span class="text-secondary">2025</span></h2>
+<p class="text-text-muted text-lg max-w-2xl leading-relaxed">
+                ¡Únete a nuestra familia educativa! Completa el siguiente formulario para iniciar el proceso de admisión y asegurar una vacante para tu hijo/a.
+            </p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+<!-- Main Form Section -->
+<div class="lg:col-span-8 space-y-8">
+<!-- Section 1: Parent Info -->
+<div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-sm border border-[#e0e5dc] dark:border-gray-700">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-secondary">person</span>
+<h3 class="text-xl font-bold">Datos del Padre, Madre o Tutor</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<label class="flex flex-col gap-2">
+<span class="text-sm font-semibold">Nombre Completo</span>
+<input class="rounded-lg border-[#e0e5dc] focus:border-secondary focus:ring-secondary/20 dark:bg-gray-700 dark:border-gray-600" placeholder="Ej. Ana García" type="text"/>
+</label>
+<label class="flex flex-col gap-2">
+<span class="text-sm font-semibold">DNI / Pasaporte</span>
+<input class="rounded-lg border-[#e0e5dc] focus:border-secondary focus:ring-secondary/20 dark:bg-gray-700 dark:border-gray-600" placeholder="Número de documento" type="text"/>
+</label>
+<label class="flex flex-col gap-2">
+<span class="text-sm font-semibold">Celular</span>
+<input class="rounded-lg border-[#e0e5dc] focus:border-secondary focus:ring-secondary/20 dark:bg-gray-700 dark:border-gray-600" placeholder="+51 999 000 000" type="tel"/>
+</label>
+<label class="flex flex-col gap-2">
+<span class="text-sm font-semibold">Correo Electrónico</span>
+<input class="rounded-lg border-[#e0e5dc] focus:border-secondary focus:ring-secondary/20 dark:bg-gray-700 dark:border-gray-600" placeholder="ejemplo@correo.com" type="email"/>
+</label>
+<label class="flex flex-col gap-2 md:col-span-2">
+<span class="text-sm font-semibold">Parentesco</span>
+<select class="rounded-lg border-[#e0e5dc] focus:border-secondary focus:ring-secondary/20 dark:bg-gray-700 dark:border-gray-600">
+<option>Madre</option>
+<option>Padre</option>
+<option>Tutor Legal</option>
+</select>
+</label>
+</div>
+</div>
+<!-- Section 2: Student Info -->
+<div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-sm border border-[#e0e5dc] dark:border-gray-700">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-secondary">school</span>
+<h3 class="text-xl font-bold">Datos del Alumno(a)</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<label class="flex flex-col gap-2 md:col-span-2">
+<span class="text-sm font-semibold">Nombre Completo del Niño/a</span>
+<input class="rounded-lg border-[#e0e5dc] focus:border-secondary focus:ring-secondary/20 dark:bg-gray-700 dark:border-gray-600" type="text"/>
+</label>
+<label class="flex flex-col gap-2">
+<span class="text-sm font-semibold">Fecha de Nacimiento</span>
+<input class="rounded-lg border-[#e0e5dc] focus:border-secondary focus:ring-secondary/20 dark:bg-gray-700 dark:border-gray-600" type="date"/>
+</label>
+<div class="flex flex-col gap-2">
+<span class="text-sm font-semibold">Edad Sugerida</span>
+<div class="flex gap-2">
+<label class="flex-1 cursor-pointer">
+<input class="sr-only peer" name="age" type="radio"/>
+<div class="text-center py-2 border border-[#e0e5dc] rounded-lg peer-checked:bg-primary/20 peer-checked:border-primary transition-all">3 años</div>
+</label>
+<label class="flex-1 cursor-pointer">
+<input class="sr-only peer" name="age" type="radio"/>
+<div class="text-center py-2 border border-[#e0e5dc] rounded-lg peer-checked:bg-primary/20 peer-checked:border-primary transition-all">4 años</div>
+</label>
+<label class="flex-1 cursor-pointer">
+<input class="sr-only peer" name="age" type="radio"/>
+<div class="text-center py-2 border border-[#e0e5dc] rounded-lg peer-checked:bg-primary/20 peer-checked:border-primary transition-all">5 años</div>
+</label>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 3: Preferences -->
+<div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-sm border border-[#e0e5dc] dark:border-gray-700">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-secondary">palette</span>
+<h3 class="text-xl font-bold">Preferencias y Talleres</h3>
+</div>
+<div class="space-y-6">
+<div class="flex flex-col gap-3">
+<span class="text-sm font-semibold">Turno Preferido</span>
+<div class="flex gap-4">
+<label class="flex items-center gap-2 cursor-pointer">
+<input class="w-5 h-5 text-secondary border-[#e0e5dc] focus:ring-secondary/20" name="shift" type="radio"/>
+<span>Mañana</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer">
+<input class="w-5 h-5 text-secondary border-[#e0e5dc] focus:ring-secondary/20" name="shift" type="radio"/>
+<span>Tarde</span>
+</label>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<span class="text-sm font-semibold">Interés en Talleres Extra-curriculares</span>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+<label class="flex items-center gap-3 p-3 border border-[#e0e5dc] rounded-lg hover:border-secondary/50 cursor-pointer transition-colors">
+<input class="rounded text-secondary focus:ring-secondary/20" type="checkbox"/>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">fitness_center</span>
+<span>Gimnasia Motriz</span>
+</div>
+</label>
+<label class="flex items-center gap-3 p-3 border border-[#e0e5dc] rounded-lg hover:border-secondary/50 cursor-pointer transition-colors">
+<input class="rounded text-secondary focus:ring-secondary/20" type="checkbox"/>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">brush</span>
+<span>Expresión Artística</span>
+</div>
+</label>
+<label class="flex items-center gap-3 p-3 border border-[#e0e5dc] rounded-lg hover:border-secondary/50 cursor-pointer transition-colors">
+<input class="rounded text-secondary focus:ring-secondary/20" type="checkbox"/>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">music_note</span>
+<span>Música y Ritmo</span>
+</div>
+</label>
+<label class="flex items-center gap-3 p-3 border border-[#e0e5dc] rounded-lg hover:border-secondary/50 cursor-pointer transition-colors">
+<input class="rounded text-secondary focus:ring-secondary/20" type="checkbox"/>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">language</span>
+<span>Iniciación al Inglés</span>
+</div>
+</label>
+</div>
+</div>
+<label class="flex flex-col gap-2">
+<span class="text-sm font-semibold">Mensaje o Consultas (Opcional)</span>
+<textarea class="rounded-lg border-[#e0e5dc] focus:border-secondary focus:ring-secondary/20 dark:bg-gray-700 dark:border-gray-600 resize-none" placeholder="Alguna consideración médica, duda específica o comentario..." rows="4"></textarea>
+</label>
+</div>
+</div>
+<!-- Footer Form -->
+<div class="flex flex-col gap-4">
+<label class="flex items-center gap-3 cursor-pointer">
+<input class="rounded text-secondary focus:ring-secondary/20" type="checkbox"/>
+<span class="text-sm text-text-muted">Acepto los términos de la <a class="underline hover:text-secondary" href="#">Política de Privacidad</a> y el tratamiento de mis datos personales.</span>
+</label>
+<button class="w-full bg-primary hover:bg-primary/90 text-text-main py-4 rounded-xl text-lg font-black transition-all shadow-md transform active:scale-[0.98]">
+                        Enviar Solicitud de Información
+                    </button>
+<p class="text-center text-xs text-text-muted">Toda la información es confidencial y solo para fines de admisión.</p>
+</div>
+</div>
+<!-- Sidebar Info Section -->
+<aside class="lg:col-span-4 space-y-6">
+<!-- What happens next -->
+<div class="bg-secondary/10 dark:bg-secondary/5 border-l-4 border-secondary p-6 rounded-r-xl">
+<h4 class="text-secondary font-bold mb-2 flex items-center gap-2">
+<span class="material-symbols-outlined">rocket_launch</span>
+                        ¿Qué sigue ahora?
+                    </h4>
+<p class="text-sm leading-relaxed text-text-main/80">
+                        Una vez enviada la solicitud, nuestro equipo de admisiones revisará tus datos. En un plazo máximo de <strong>48 horas hábiles</strong>, recibirás una llamada para agendar una visita guiada y conocer nuestras instalaciones.
+                    </p>
+</div>
+<!-- Contact Info Card -->
+<div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-[#e0e5dc] dark:border-gray-700 space-y-6">
+<h4 class="font-bold text-lg">Información de Contacto</h4>
+<div class="space-y-4">
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-secondary">location_on</span>
+<div>
+<p class="text-sm font-bold">Ubicación</p>
+<p class="text-sm text-text-muted">Calle Los Jazmines 450, Surco, Lima.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-secondary">call</span>
+<div>
+<p class="text-sm font-bold">Teléfonos</p>
+<p class="text-sm text-text-muted">(01) 445-0987 / 998 765 432</p>
+</div>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-secondary">schedule</span>
+<div>
+<p class="text-sm font-bold">Horario de Oficina</p>
+<p class="text-sm text-text-muted">Lun - Vie: 8:00 AM - 4:00 PM</p>
+</div>
+</div>
+</div>
+<div class="h-40 w-full rounded-lg overflow-hidden grayscale border border-[#e0e5dc]">
+<img class="w-full h-full object-cover" data-alt="Simplified map showing Surco district location" data-location="Surco, Lima" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4Fb4PhMW2wSrNLbhgRC-5mk46JZ79Lw6PdrmMIS3PI6yd8LqAL4_rSayKv1OZyKnhJcek_-50il1UbC3uGYkai3qn3v9iE8PkaDBCSk0rVdSzQgBbkpVvk6aklwFmamAndeVC9kQlZwpwyKcTVkcpdOiDcP3PLOqxHXSEVyzLpbFUUkMLU2-L7rxG8D1qW1_ptVW7U0m0LZer7R0g3k9H-Bly3rU_Hc6m27AfSh0X690kvUSuXJaP2fvZGc30AttYdvM-GY7r0Cb5"/>
+</div>
+</div>
+<!-- Trust Badges -->
+<div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-[#e0e5dc] dark:border-gray-700">
+<h4 class="font-bold text-center mb-6 text-sm text-text-muted uppercase tracking-widest">Nuestras Certificaciones</h4>
+<div class="flex justify-around items-center opacity-70 grayscale hover:grayscale-0 transition-all">
+<div class="flex flex-col items-center gap-2">
+<div class="size-12 rounded-full bg-secondary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">verified</span>
+</div>
+<span class="text-[10px] font-bold text-center">UGEL 07<br/>Autorizado</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="size-12 rounded-full bg-secondary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">high_quality</span>
+</div>
+<span class="text-[10px] font-bold text-center">Calidad<br/>Educativa</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="size-12 rounded-full bg-secondary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">security</span>
+</div>
+<span class="text-[10px] font-bold text-center">Protocolo<br/>Seguro</span>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<footer class="mt-20 border-t border-[#e0e5dc] py-10 bg-white dark:bg-background-dark">
+<div class="max-w-[1200px] mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-3">
+<div class="size-8 bg-primary rounded flex items-center justify-center text-text-main">
+<span class="material-symbols-outlined text-xl">child_care</span>
+</div>
+<span class="font-bold">La Casita de Mami</span>
+</div>
+<p class="text-sm text-text-muted">© 2024 La Casita de Mami. Todos los derechos reservados.</p>
+<div class="flex gap-4">
+<a class="text-text-muted hover:text-secondary" href="#"><span class="material-symbols-outlined">public</span></a>
+<a class="text-text-muted hover:text-secondary" href="#"><span class="material-symbols-outlined">mail</span></a>
+</div>
+</div>
+</footer>
+</body></html>
