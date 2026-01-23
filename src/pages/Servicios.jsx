@@ -1,4 +1,48 @@
 export default function Servicios() {
+  const precios = [
+    { icon: '📝', title: 'Matrícula', price: 'S/. 690.00', detail: null },
+    { icon: '📚', title: 'Mensualidad', price: 'S/. 690.00', detail: 'Horario de 8:00 a.m a 1:00 pm' },
+    { icon: '🎒', title: 'Matrícula Guardería', price: 'S/. 690', detail: 'Cualquier horario' },
+    { icon: '🌟', title: 'Guardería Completa', price: 'S/. 1150.00', detail: 'Horario completo de 8:00 a.m a 6:00 pm' },
+    { icon: '🌙', title: 'Guardería Turno Tarde', price: 'S/. 550', detail: null },
+    { icon: '📞', title: 'Otros Horarios', price: 'Consultar', detail: 'Consultar con dirección' },
+  ]
+
+  const guarderiaFeatures = [
+    'Atención a niños desde 3 meses a 5 años',
+    'CÁMARAS DE SEGURIDAD en todas las áreas',
+    'Todos los niños llevan programa educativo de acuerdo a la edad',
+    'Atención personalizada',
+    'Los niños están separados por edades',
+    'Contamos con sala de cunas',
+    'Arenero para psicomotricidad',
+    'Sala de estimulación',
+    'Servicio de almuerzo (costo adicional)',
+    'Horario de atención de lunes a viernes 8:00 AM a 6:00 PM',
+  ]
+
+  const nidoFeatures = [
+    'Inicio de clases 4 de Marzo',
+    'Taller de TAEKWONDO todo el año',
+    'Horario de lunes a viernes de 8:00 AM a 1:00 PM',
+    'Cámaras de seguridad en todos los ambientes del nido',
+    'Programa de psicomotricidad',
+    'Estimulación de Lenguaje',
+    'Aulas ventiladas',
+    '12 niños por aula',
+    'Clases de inglés',
+    'Amplios ambientes',
+    'Una auxiliar perenne en cada aula',
+  ]
+
+  const instalaciones = [
+    { icon: 'beach_access', name: 'Arenero' },
+    { icon: 'restaurant', name: 'Comedor' },
+    { icon: 'sports_gymnastics', name: 'Sala de psicomotricidad' },
+    { icon: 'toys', name: 'Amplio patio de juegos' },
+    { icon: 'psychology', name: 'Acompañamiento psicológico' },
+  ]
+
   const services = [
     {
       icon: 'medical_services',
@@ -69,8 +113,111 @@ export default function Servicios() {
         </div>
       </div>
 
-      {/* Section Header */}
+      {/* Precios 2026 */}
       <div className="mt-12 px-4">
+        <div className="bg-gradient-to-br from-primary/10 via-accent-lime/10 to-white rounded-3xl p-8 md:p-12 border border-primary/20">
+          <div className="text-center mb-10">
+            <span className="text-4xl mb-2 block">🌈</span>
+            <h2 className="text-3xl md:text-4xl font-black text-text-main">Precios 2026</h2>
+            <p className="text-text-muted mt-2">Inversión en el futuro de tus pequeños</p>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {precios.map((precio, index) => (
+              <div key={index} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                <div className="flex items-start gap-4">
+                  <span className="text-3xl">{precio.icon}</span>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-text-main text-lg">{precio.title}</h3>
+                    <p className="text-primary font-black text-2xl mt-1">{precio.price}</p>
+                    {precio.detail && (
+                      <p className="text-text-muted text-sm mt-1">{precio.detail}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Servicios Principales: Guardería y Nido */}
+      <div className="mt-16 px-4">
+        <div className="text-center mb-12">
+          <span className="text-primary font-bold tracking-wider uppercase text-sm">Nuestros Servicios</span>
+          <h2 className="text-3xl md:text-4xl font-bold text-text-main mt-2">🌈 Bienvenidos al Nido - Guardería La Casita de Mami 🌈</h2>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* Guardería */}
+          <div className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden">
+            <div className="bg-gradient-to-r from-primary to-primary/80 p-6 text-white">
+              <div className="flex items-center gap-3">
+                <span className="material-symbols-outlined text-4xl">child_care</span>
+                <div>
+                  <h3 className="text-2xl font-black">Servicio de Guardería</h3>
+                  <p className="text-white/80 text-sm">Cuidado integral para los más pequeños</p>
+                </div>
+              </div>
+            </div>
+            <div className="p-6">
+              <ul className="space-y-3">
+                {guarderiaFeatures.map((feature, index) => (
+                  <li key={index} className="flex items-start gap-3">
+                    <span className="text-primary mt-0.5">⭐️</span>
+                    <span className="text-text-muted">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Nido */}
+          <div className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden">
+            <div className="bg-gradient-to-r from-accent-lime/80 to-green-500 p-6 text-white">
+              <div className="flex items-center gap-3">
+                <span className="material-symbols-outlined text-4xl">school</span>
+                <div>
+                  <h3 className="text-2xl font-black">Nido</h3>
+                  <p className="text-white/80 text-sm">Educación inicial de calidad</p>
+                </div>
+              </div>
+            </div>
+            <div className="p-6">
+              <ul className="space-y-3">
+                {nidoFeatures.map((feature, index) => (
+                  <li key={index} className="flex items-start gap-3">
+                    <span className="text-green-500 mt-0.5">✨</span>
+                    <span className="text-text-muted">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Instalaciones */}
+      <div className="mt-16 px-4">
+        <div className="bg-background-dark rounded-3xl p-8 md:p-12">
+          <h3 className="text-white text-2xl font-bold text-center mb-8">Contamos con:</h3>
+          <div className="flex flex-wrap justify-center gap-4">
+            {instalaciones.map((item, index) => (
+              <div key={index} className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl px-6 py-4 flex items-center gap-3">
+                <span className="material-symbols-outlined text-primary text-2xl">{item.icon}</span>
+                <span className="text-white font-medium">{item.name}</span>
+              </div>
+            ))}
+          </div>
+          <div className="mt-8 text-center">
+            <p className="text-gray-400 mb-4">📍 Puedes conocer nuestras instalaciones en:</p>
+            <p className="text-white text-xl font-bold">Calle Morropon 105, Surco</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Section Header */}
+      <div className="mt-16 px-4">
         <div className="flex flex-col gap-2">
           <h2 className="text-text-main text-3xl font-bold tracking-tight">Servicios de Salud Complementarios</h2>
           <div className="h-1.5 w-24 bg-accent-lime rounded-full"></div>

@@ -26,7 +26,7 @@ export default function Ubicacion() {
               <div>
                 <h3 className="font-bold text-lg">Nuestra Dirección</h3>
                 <p className="text-text-muted text-sm leading-relaxed mt-1">
-                  Calle Bayóvar Sur Nº 265, Urb. Prolongación Benavides – Santiago de Surco, Lima.
+                  Calle Morropon 105, Santiago de Surco, Lima.
                 </p>
               </div>
             </div>
@@ -68,7 +68,7 @@ export default function Ubicacion() {
               <tbody>
                 <tr className="border-b border-gray-50">
                   <td className="py-2 font-medium">Lunes a Viernes</td>
-                  <td className="py-2 text-right text-text-muted">8:00 AM - 5:00 PM</td>
+                  <td className="py-2 text-right text-text-muted">8:00 AM - 6:00 PM</td>
                 </tr>
                 <tr>
                   <td className="py-2 font-medium">Sábados</td>
@@ -83,32 +83,58 @@ export default function Ubicacion() {
             <h3 className="font-bold text-lg mb-4">Contacto Directo</h3>
             <div className="space-y-3">
               <a 
-                href="tel:+51988238378"
+                href="tel:+51908880326"
                 className="flex items-center justify-between group p-3 rounded-lg border border-white/10 hover:bg-white/10 transition-colors"
               >
                 <div className="flex items-center gap-3">
                   <span className="material-symbols-outlined text-primary">call</span>
-                  <span>988 238 378</span>
+                  <span>908 880 326</span>
                 </div>
                 <span className="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
               </a>
               <a 
-                href="tel:+51942694876"
+                href="https://api.whatsapp.com/send?phone=51908880326"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex items-center justify-between group p-3 rounded-lg border border-white/10 hover:bg-white/10 transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-primary">call</span>
-                  <span>942 694 876</span>
+                  <span className="material-symbols-outlined text-[#25D366]">chat</span>
+                  <span>WhatsApp</span>
                 </div>
-                <span className="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+                <span className="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
               </a>
               <a 
-                href="mailto:hola@lacasitademami.edu.pe"
+                href="mailto:lacasitademamisurco@gmail.com"
                 className="flex items-center justify-between group p-3 rounded-lg border border-white/10 hover:bg-white/10 transition-colors"
               >
                 <div className="flex items-center gap-3">
                   <span className="material-symbols-outlined text-primary">mail</span>
-                  <span>Escríbenos</span>
+                  <span>lacasitademamisurco@gmail.com</span>
+                </div>
+                <span className="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+              </a>
+              <a 
+                href="https://www.instagram.com/lacasitademami"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between group p-3 rounded-lg border border-white/10 hover:bg-white/10 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="material-symbols-outlined text-pink-500">photo_camera</span>
+                  <span>@lacasitademami</span>
+                </div>
+                <span className="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+              </a>
+              <a 
+                href="https://www.tiktok.com/@lacasitademamisur"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between group p-3 rounded-lg border border-white/10 hover:bg-white/10 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="material-symbols-outlined text-white">music_note</span>
+                  <span>@lacasitademamisur</span>
                 </div>
                 <span className="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
               </a>

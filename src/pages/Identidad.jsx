@@ -79,7 +79,7 @@ export default function Identidad() {
               <div>
                 <h3 className="text-3xl font-bold mb-6">Nuestra Misión</h3>
                 <p className="text-text-muted text-lg leading-relaxed">
-                  Brindamos una formación integral y trabajamos de manera colaborativa con los padres de familia para el desarrollo pleno de cada niño, fomentando un ambiente seguro donde el aprendizaje nace del afecto.
+                  La Institución Educativa Inicial Privada "La Casita de Mami", perteneciente a una sociedad diversa y aun desigual y al mismo tiempo con grandes potencialidades, aspiramos a una educación que tiene como misión: que contribuya con la formación de todos los niños y niñas sin exclusión, así como de profesores conscientes de sus derechos y sus deberes, con una ética sólida, dispuestos a procurar su bienestar y el de los demás trabajando de forma colaborativa, cuidando el ambiente, investigando sobre el mundo que los rodea, siendo capaces de aprender permanentemente, y dotados con iniciativa y emprendimiento, con la participación de los Padres de Familia.
                 </p>
               </div>
             </div>
@@ -92,7 +92,7 @@ export default function Identidad() {
               <div>
                 <h3 className="text-3xl font-bold mb-6">Nuestra Visión</h3>
                 <p className="text-text-muted text-lg leading-relaxed">
-                  Ser líderes en calidad educativa, democracia y excelencia, consolidándonos como un referente pedagógico basado en valores institucionales que transforman la sociedad desde la raíz.
+                  La IEIP "La Casita de Mami", de conformidad con el nuevo enfoque educativo aspira: Mejorar la calidad educativa a través del desarrollo del pensamiento, de una educación en democracia, para el trabajo basado en una educación en valores, con la finalidad de promover el desarrollo de las actitudes para lograr una identidad personal, comunal, institucional y nacional, que permita formar en los niños y niñas en lo ético, espiritual, cognitivo, afectivo, comunicativo, estético, corporal, ambiental, cultural y sociopolítico, a fin de lograr su formación evolutiva dentro de nuestra sociedad. Comprometida con el cambio social de su entorno a través del desarrollo de actividades productivas.
                 </p>
               </div>
             </div>
