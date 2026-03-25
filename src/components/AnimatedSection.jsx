@@ -1,48 +1,49 @@
 import { motion } from 'framer-motion'
+import { MOTION_DURATION, MOTION_EASE_STANDARD, MOTION_DISTANCE } from '../utils/motionTokens'
 
 // Variantes de animación reutilizables
 export const fadeInUp = {
-  hidden: { opacity: 0, y: 60 },
+  hidden: { opacity: 0, y: MOTION_DISTANCE.md },
   visible: { 
     opacity: 1, 
     y: 0,
-    transition: { duration: 0.6, ease: "easeOut" }
+    transition: { duration: MOTION_DURATION.smooth, ease: MOTION_EASE_STANDARD }
   }
 }
 
 export const fadeInDown = {
-  hidden: { opacity: 0, y: -60 },
+  hidden: { opacity: 0, y: -MOTION_DISTANCE.md },
   visible: { 
     opacity: 1, 
     y: 0,
-    transition: { duration: 0.6, ease: "easeOut" }
+    transition: { duration: MOTION_DURATION.smooth, ease: MOTION_EASE_STANDARD }
   }
 }
 
 export const fadeInLeft = {
-  hidden: { opacity: 0, x: -60 },
+  hidden: { opacity: 0, x: -MOTION_DISTANCE.md },
   visible: { 
     opacity: 1, 
     x: 0,
-    transition: { duration: 0.6, ease: "easeOut" }
+    transition: { duration: MOTION_DURATION.smooth, ease: MOTION_EASE_STANDARD }
   }
 }
 
 export const fadeInRight = {
-  hidden: { opacity: 0, x: 60 },
+  hidden: { opacity: 0, x: MOTION_DISTANCE.md },
   visible: { 
     opacity: 1, 
     x: 0,
-    transition: { duration: 0.6, ease: "easeOut" }
+    transition: { duration: MOTION_DURATION.smooth, ease: MOTION_EASE_STANDARD }
   }
 }
 
 export const scaleIn = {
-  hidden: { opacity: 0, scale: 0.8 },
+  hidden: { opacity: 0, scale: 0.96 },
   visible: { 
     opacity: 1, 
     scale: 1,
-    transition: { duration: 0.5, ease: "easeOut" }
+    transition: { duration: MOTION_DURATION.base, ease: MOTION_EASE_STANDARD }
   }
 }
 
@@ -51,18 +52,18 @@ export const staggerContainer = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2
+      staggerChildren: 0.08,
+      delayChildren: 0.12
     }
   }
 }
 
 export const staggerItem = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: MOTION_DISTANCE.sm },
   visible: { 
     opacity: 1, 
     y: 0,
-    transition: { duration: 0.5, ease: "easeOut" }
+    transition: { duration: MOTION_DURATION.base, ease: MOTION_EASE_STANDARD }
   }
 }
 
@@ -94,11 +95,11 @@ export function AnimatedCard({ children, className = "" }) {
     <motion.div
       className={className}
       whileHover={{ 
-        y: -8, 
-        boxShadow: "0 20px 40px rgba(0,0,0,0.1)",
-        transition: { duration: 0.3 }
+        y: -4, 
+        boxShadow: "0 14px 30px rgba(15, 23, 42, 0.10)",
+        transition: { duration: MOTION_DURATION.quick, ease: MOTION_EASE_STANDARD }
       }}
-      whileTap={{ scale: 0.98 }}
+      whileTap={{ scale: 0.99 }}
     >
       {children}
     </motion.div>
@@ -110,8 +111,9 @@ export function AnimatedButton({ children, className = "", onClick }) {
   return (
     <motion.button
       className={className}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ duration: MOTION_DURATION.quick }}
       onClick={onClick}
     >
       {children}
@@ -126,10 +128,10 @@ export function AnimatedImage({ src, alt, className = "" }) {
       src={src}
       alt={alt}
       className={className}
-      initial={{ opacity: 0, scale: 1.1 }}
+      initial={{ opacity: 0, scale: 1.03 }}
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
+      transition={{ duration: MOTION_DURATION.smooth, ease: MOTION_EASE_STANDARD }}
     />
   )
 }
@@ -139,14 +141,10 @@ export function AnimatedCounter({ value, suffix = "", className = "" }) {
   return (
     <motion.span
       className={className}
-      initial={{ opacity: 0, scale: 0.5 }}
+      initial={{ opacity: 0, scale: 0.92 }}
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}
-      transition={{ 
-        type: "spring",
-        stiffness: 100,
-        damping: 10
-      }}
+      transition={{ duration: MOTION_DURATION.base, ease: MOTION_EASE_STANDARD }}
     >
       {value}{suffix}
     </motion.span>

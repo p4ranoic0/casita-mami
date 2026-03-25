@@ -1,7 +1,11 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { MOTION_DURATION, MOTION_EASE_STANDARD } from '../utils/motionTokens'
+import { generateConfirmationEmail, generateAdminNotification } from '../utils/emailTemplates'
 
 export default function Formulario() {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     parentFullName: '',
     parentPhone: '',
@@ -34,26 +38,45 @@ export default function Formulario() {
     }
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Here you would typically send the data to a server
+    
+    // Guardar datos en sessionStorage para mostrar en confirmación
+    sessionStorage.setItem('lastFormSubmission', JSON.stringify(formData))
+    
+    // Aquí irían las llamadas a API para:
+    // 1. Enviar email de confirmación al padre
+    const confirmationEmail = generateConfirmationEmail(formData)
+    console.log('Confirmation email:', confirmationEmail)
+    
+    // 2. Enviar notificación al admin
+    const adminNotification = generateAdminNotification(formData)
+    console.log('Admin notification:', adminNotification)
+    
+    // 3. Guardar formulario en base de datos
     console.log('Form submitted:', formData)
-    // Navigate to confirmation page
-    window.location.href = '/confirmacion'
+    
+    // Navegar a confirmación
+    navigate('/confirmacion')
   }
 
   return (
     <main className="max-w-[1280px] mx-auto px-6 lg:px-20 py-10">
       {/* Header */}
-      <div className="text-center mb-12">
+      <motion.div
+        className="text-center mb-12"
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: MOTION_DURATION.smooth, ease: MOTION_EASE_STANDARD }}
+      >
         <span className="inline-block bg-primary/10 text-primary px-5 py-2 rounded-full text-sm font-bold mb-4">
-          Admisión 2025
+          Admisión {new Date().getFullYear()}
         </span>
         <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-4">Formulario de Pre-Inscripción</h1>
         <p className="text-lg text-text-muted max-w-xl mx-auto">
           Complete el siguiente formulario para iniciar el proceso de admisión. Un asesor se comunicará con usted en las próximas 24-48 horas.
         </p>
-      </div>
+      </motion.div>
 
       <div className="flex flex-col lg:flex-row gap-10">
         {/* Main Form Column */}

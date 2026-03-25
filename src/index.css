@@ -8,6 +8,18 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+button,
+a,
+input,
+textarea {
+  transition: all 0.2s ease;
+}
+
+:focus-visible {
+  outline: 3px solid rgba(66, 215, 202, 0.5);
+  outline-offset: 2px;
+}
+
 /* Custom scrollbar for horizontal sections */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;

@@ -52,12 +52,11 @@ export default function Footer() {
           
           {/* Quick Links */}
           <div className="md:col-span-2">
-            <h3 className="font-bold mb-4">Institución</h3>
+            <h3 className="font-bold mb-4">Navegación</h3>
             <ul className="space-y-3 text-text-muted">
-              <li><Link to="/identidad" className="hover:text-primary transition-colors">Identidad</Link></li>
-              <li><Link to="/talleres" className="hover:text-primary transition-colors">Talleres</Link></li>
+              <li><Link to="/" className="hover:text-primary transition-colors">Inicio</Link></li>
               <li><Link to="/servicios" className="hover:text-primary transition-colors">Servicios</Link></li>
-              <li><Link to="/familias" className="hover:text-primary transition-colors">Familias</Link></li>
+              <li><Link to="/contacto" className="hover:text-primary transition-colors">Contacto</Link></li>
             </ul>
           </div>
 
@@ -83,13 +82,15 @@ export default function Footer() {
           {/* Map */}
           <div className="md:col-span-3">
             <div className="w-full h-48 bg-gray-200 rounded-2xl overflow-hidden relative group">
-              <img 
-                className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAx5j8rXBShUB1-6KrUngbrtAtWToX1b6_TRLZ6t2qA42bqEyEDHspw3sC_zapsYde85fS-ftecDHS69NUAPYUlXUpJituqsShfZOd-dKzX2zhyCn68QGAV6xgFBG9p4aN7Lk8GeFe7K4p6esJscq26QihgWnABm1-kaQNiFXXY0B7px-a2M6JeBHLWROci3F1iHibONlkmyb91mE6qvmknFLSqpvFUtzhT_jcy__z5JiZJqm0TcJ1mQdlNgdM6O0Mh5_Ry-gv3cBj1"
-                alt="Mapa de ubicación en Surco"
+              <iframe
+                title="Mini mapa de ubicación"
+                src="https://www.google.com/maps?q=Calle+Morropon+105,+Santiago+de+Surco,+Lima&output=embed"
+                className="h-full w-full"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
               />
               <Link 
-                to="/ubicacion"
+                to="/contacto"
                 className="absolute inset-0 flex items-center justify-center"
               >
                 <div className="bg-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
@@ -103,10 +104,7 @@ export default function Footer() {
         
         <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-gray-400">© 2026 La Casita de Mami. Todos los derechos reservados.</p>
-          <div className="flex gap-6">
-            <a href="#" className="text-sm text-gray-400 hover:text-text-main">Privacidad</a>
-            <a href="#" className="text-sm text-gray-400 hover:text-text-main">Términos</a>
-          </div>
+          <p className="text-sm text-gray-400">Sitio simplificado: Inicio · Servicios · Contacto</p>
         </div>
       </div>
     </footer>
