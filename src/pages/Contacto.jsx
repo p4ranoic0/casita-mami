@@ -111,7 +111,7 @@ export default function Contacto() {
       </section>
 
       {/* MAP */}
-      <section className="grid gap-4 py-5 md:grid-cols-2">
+      <section className="grid grid-cols-1 gap-4 py-5 md:grid-cols-2">
         <div className="flex flex-col justify-center gap-3 rounded-3xl border border-primary/15 bg-white p-8 md:p-9">
           <h2 className="font-display text-2xl font-semibold tracking-tight text-text-main md:text-[28px]">Ubicación</h2>
           <p className="leading-relaxed text-text-muted">
@@ -131,7 +131,7 @@ export default function Contacto() {
           <iframe
             title="Mapa de La Casita de Mami"
             src="https://www.google.com/maps?q=Calle+Morropon+105,+Santiago+de+Surco,+Lima&output=embed"
-            className="h-full min-h-[320px] w-full"
+            className="block h-80 w-full md:h-full md:min-h-[320px]"
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
           />
