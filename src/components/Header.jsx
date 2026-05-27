@@ -1,5 +1,5 @@
 import { Link, NavLink } from 'react-router-dom'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import {
   MOTION_DISTANCE,
@@ -8,19 +8,31 @@ import {
   withReducedMotion,
 } from '../utils/motionTokens'
 
+const navLinks = [
+  { to: '/', label: 'Inicio', icon: 'home' },
+  { to: '/servicios', label: 'Servicios', icon: 'school' },
+  { to: '/contacto', label: 'Contacto', icon: 'place' },
+]
+
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const prefersReducedMotion = useReducedMotion()
 
-  const navLinks = [
-    { to: '/', label: 'Inicio' },
-    { to: '/servicios', label: 'Servicios' },
-    { to: '/contacto', label: 'Contacto' },
-  ]
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   return (
-    <motion.header 
-      className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-[#f1f4f4]"
+    <motion.header
+      className={`sticky top-0 z-50 transition-all duration-200 ${
+        scrolled
+          ? 'border-b border-primary/15 bg-white/85 shadow-soft backdrop-saturate-150 backdrop-blur-xl'
+          : 'border-b border-transparent bg-white/95 backdrop-blur-md'
+      }`}
       initial={{
         y: withReducedMotion(prefersReducedMotion, -MOTION_DISTANCE.md, 0),
         opacity: withReducedMotion(prefersReducedMotion, 0, 1),
@@ -31,77 +43,74 @@ export default function Header() {
         ease: MOTION_EASE_STANDARD,
       }}
     >
-      <div className="px-4 md:px-10 py-3 max-w-[1280px] mx-auto w-full flex items-center justify-between">
+      <div className="mx-auto flex w-full max-w-[1240px] items-center justify-between gap-4 px-6 py-3.5">
         <Link to="/" className="flex items-center gap-3">
-          <motion.div 
-            className="size-8 rounded-full bg-primary flex items-center justify-center text-white"
+          <motion.div
+            className="flex size-11 items-center justify-center rounded-full bg-primary/5 p-0.5 shadow-soft"
             whileHover={{ scale: withReducedMotion(prefersReducedMotion, 1.04, 1) }}
             whileTap={{ scale: withReducedMotion(prefersReducedMotion, 0.98, 1) }}
             transition={{ duration: MOTION_DURATION.quick }}
           >
-            <span className="material-symbols-outlined text-[20px]">child_care</span>
+            <img
+              src={`${import.meta.env.BASE_URL}logo.jpg`}
+              alt="La Casita de Mami"
+              className="size-10 rounded-full object-cover"
+            />
           </motion.div>
-          <h2 className="text-text-main text-lg font-bold leading-tight tracking-tight">La Casita de Mami</h2>
+          <div className="leading-tight">
+            <h2 className="font-display text-lg font-bold tracking-tight text-primary">La Casita de Mami</h2>
+            <span className="text-[11px] font-medium uppercase tracking-[0.06em] text-text-muted">Nido · Guardería · Surco</span>
+          </div>
         </Link>
-        
-        <div className="hidden md:flex items-center gap-8">
-          <nav className="flex gap-6">
-            {navLinks.map((link, index) => (
-              <motion.div
-                key={link.to}
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  delay: withReducedMotion(prefersReducedMotion, index * 0.08, 0),
-                  duration: MOTION_DURATION.base,
-                  ease: MOTION_EASE_STANDARD,
-                }}
-              >
-                <NavLink
-                  to={link.to}
-                  className={({ isActive }) =>
-                    `text-sm font-medium transition-colors relative ${
-                      isActive ? 'text-primary font-semibold' : 'text-text-muted hover:text-primary'
-                    }`
-                  }
-                >
-                  {({ isActive }) => (
-                    <>
-                      {link.label}
-                      {isActive && (
-                        <motion.div
-                          className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary rounded-full"
-                          layoutId="activeTab"
-                          transition={{ duration: MOTION_DURATION.quick, ease: MOTION_EASE_STANDARD }}
-                        />
-                      )}
-                    </>
-                  )}
-                </NavLink>
-              </motion.div>
-            ))}
-          </nav>
+
+        <nav className="hidden items-center gap-1.5 md:flex">
+          {navLinks.map((link) => (
+            <NavLink
+              key={link.to}
+              to={link.to}
+              end={link.to === '/'}
+              className={({ isActive }) =>
+                `inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-semibold transition ${
+                  isActive ? 'bg-primary text-white shadow-button-sm' : 'text-text-main hover:bg-primary-soft'
+                }`
+              }
+            >
+              <span className="material-symbols-outlined text-[18px]">{link.icon}</span>
+              {link.label}
+            </NavLink>
+          ))}
+        </nav>
+
+        <div className="hidden items-center gap-2 md:flex">
+          <a
+            href="tel:+51908880326"
+            className="inline-flex items-center gap-1.5 rounded-xl border-[1.5px] border-primary/20 px-3.5 py-2.5 text-[13px] font-semibold text-text-main hover:bg-primary-soft"
+          >
+            <span className="material-symbols-outlined text-[18px] text-primary">call</span>
+            908 880 326
+          </a>
           <motion.div
             whileHover={{ scale: withReducedMotion(prefersReducedMotion, 1.02, 1) }}
             whileTap={{ scale: withReducedMotion(prefersReducedMotion, 0.98, 1) }}
             transition={{ duration: MOTION_DURATION.quick }}
           >
-            <Link 
+            <Link
               to="/contacto"
-              className="bg-primary hover:bg-primary-dark transition-colors text-text-main font-bold text-sm px-5 py-2.5 rounded-xl shadow-sm"
+              className="rounded-xl bg-primary px-4 py-2.5 text-[13px] font-bold text-white shadow-button-sm hover:bg-primary-dark"
             >
-              Agendar Visita
+              Agendar visita
             </Link>
           </motion.div>
         </div>
-        
-        {/* Mobile Menu Icon */}
-        <motion.button 
-          className="md:hidden p-2 text-text-main"
+
+        {/* Mobile burger */}
+        <motion.button
+          className="flex size-10 items-center justify-center rounded-xl bg-primary-soft text-primary md:hidden"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           whileTap={{ scale: withReducedMotion(prefersReducedMotion, 0.95, 1) }}
+          aria-label="Abrir menú"
         >
-          <motion.span 
+          <motion.span
             className="material-symbols-outlined"
             animate={{ rotate: mobileMenuOpen ? 180 : 0 }}
             transition={{ duration: 0.3 }}
@@ -111,57 +120,42 @@ export default function Header() {
         </motion.button>
       </div>
 
-      {/* Mobile Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div 
-            className="md:hidden bg-white border-t border-gray-100 px-4 py-4 overflow-hidden"
+          <motion.div
+            className="overflow-hidden border-t border-primary/10 bg-white px-6 py-3 md:hidden"
             initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
+            animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{
               duration: withReducedMotion(prefersReducedMotion, MOTION_DURATION.base, 0.01),
               ease: MOTION_EASE_STANDARD,
             }}
           >
-            <nav className="flex flex-col gap-4">
-              {navLinks.map((link, index) => (
-                <motion.div
+            <nav className="flex flex-col gap-1">
+              {navLinks.map((link) => (
+                <NavLink
                   key={link.to}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{
-                    delay: withReducedMotion(prefersReducedMotion, index * 0.04, 0),
-                    duration: MOTION_DURATION.quick,
-                    ease: MOTION_EASE_STANDARD,
-                  }}
-                >
-                  <NavLink
-                    to={link.to}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={({ isActive }) =>
-                      `text-base font-medium transition-colors py-2 block ${
-                        isActive ? 'text-primary font-semibold' : 'text-text-muted hover:text-primary'
-                      }`
-                    }
-                  >
-                    {link.label}
-                  </NavLink>
-                </motion.div>
-              ))}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-              >
-                <Link 
-                  to="/contacto"
+                  to={link.to}
+                  end={link.to === '/'}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="bg-primary hover:bg-primary-dark text-text-main font-bold text-sm px-5 py-3 rounded-xl shadow-sm text-center mt-2 block"
+                  className={({ isActive }) =>
+                    `inline-flex items-center gap-3 rounded-xl px-3 py-3 text-base font-semibold transition ${
+                      isActive ? 'bg-primary-soft text-primary' : 'text-text-main'
+                    }`
+                  }
                 >
-                  Agendar Visita
-                </Link>
-              </motion.div>
+                  <span className="material-symbols-outlined">{link.icon}</span>
+                  {link.label}
+                </NavLink>
+              ))}
+              <Link
+                to="/contacto"
+                onClick={() => setMobileMenuOpen(false)}
+                className="mt-2 block rounded-xl bg-primary px-4 py-3.5 text-center font-bold text-white shadow-button"
+              >
+                Agendar visita
+              </Link>
             </nav>
           </motion.div>
         )}

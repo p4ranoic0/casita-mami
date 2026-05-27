@@ -13,7 +13,7 @@ export default function WhatsAppButton() {
       href="https://api.whatsapp.com/send?phone=51908880326" 
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-8 right-8 size-16 bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-2xl shadow-[#25D366]/40 z-[100]"
+      className="hidden md:flex fixed bottom-8 right-8 size-16 bg-[#25D366] text-white rounded-full items-center justify-center shadow-2xl shadow-[#25D366]/40 z-[100]"
       aria-label="Contactar por WhatsApp"
       initial={{
         scale: withReducedMotion(prefersReducedMotion, 0.9, 1),

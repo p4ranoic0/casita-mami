@@ -3,6 +3,7 @@ import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import Header from './Header'
 import Footer from './Footer'
 import WhatsAppButton from './WhatsAppButton'
+import MobileActionBar from './MobileActionBar'
 import {
   MOTION_DISTANCE,
   MOTION_DURATION,
@@ -36,7 +37,7 @@ export default function Layout() {
   }
 
   return (
-    <div className="relative flex flex-col min-h-screen w-full bg-background-light text-text-main font-display antialiased overflow-x-hidden">
+    <div className="relative flex flex-col min-h-screen w-full bg-background-light text-text-main font-sans antialiased pb-[84px] md:pb-0">
       <Header />
       <main className="flex-1">
         <AnimatePresence mode="wait">
@@ -52,6 +53,7 @@ export default function Layout() {
           </motion.div>
         </AnimatePresence>
       </main>
+      <MobileActionBar />
       <Footer />
       <WhatsAppButton />
     </div>

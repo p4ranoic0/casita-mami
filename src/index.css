@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html, body {
+  overflow-x: clip;
+}
+
 body {
   font-family: 'Plus Jakarta Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -16,7 +20,7 @@ textarea {
 }
 
 :focus-visible {
-  outline: 3px solid rgba(66, 215, 202, 0.5);
+  outline: 3px solid rgba(138, 79, 189, 0.5);
   outline-offset: 2px;
 }
 
@@ -45,7 +49,7 @@ textarea {
 
 /* Pattern background */
 .pattern-bg {
-  background-image: radial-gradient(#42d7ca 0.5px, transparent 0.5px), radial-gradient(#BFFC2F 0.5px, #fafaf9 0.5px);
+  background-image: radial-gradient(#8A4FBD 0.5px, transparent 0.5px), radial-gradient(#F4A8C9 0.5px, #FFFCF7 0.5px);
   background-size: 20px 20px;
   background-position: 0 0, 10px 10px;
 }
@@ -58,11 +62,17 @@ textarea {
 }
 .faq-accordion input:checked ~ .faq-header .arrow-icon {
   transform: rotate(180deg);
-  color: #42d7ca;
+  color: #8A4FBD;
 }
 .faq-content {
   max-height: 0;
   overflow: hidden;
   transition: all 0.3s ease-in-out;
   opacity: 0;
+}
+
+/* Animación usada por HeroQuickAnswers */
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
