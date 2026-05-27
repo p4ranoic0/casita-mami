@@ -90,7 +90,7 @@ export default function Servicios() {
               3 servicios
             </span>
             <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.02] tracking-tight text-text-main md:text-[56px]">
-              Pensados para cada <em className="not-italic font-display italic text-primary">etapa</em>
+              Pensados para cada <em className="font-display italic font-medium text-primary">etapa</em>
             </h1>
             <p className="mt-3 text-lg leading-relaxed text-text-muted">
               Nido, guardería y bienestar complementario — con horarios claros y atención cercana.

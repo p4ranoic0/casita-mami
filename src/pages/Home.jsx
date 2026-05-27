@@ -82,7 +82,7 @@ export default function Home() {
               Educación inicial en Surco
             </span>
             <h1 className="font-display text-4xl font-semibold leading-[1.02] text-text-main tracking-tight md:text-[56px]">
-              Un lugar <em className="not-italic font-display italic text-primary">seguro</em> para crecer con amor.
+              Un lugar <em className="font-display italic font-medium text-primary">seguro</em> para crecer con amor.
             </h1>
             <p className="max-w-xl text-lg leading-relaxed text-text-muted">
               Acompañamos a niños desde los 3 meses hasta los 5 años. Atención cercana, espacios seguros y rutinas simples para las familias.

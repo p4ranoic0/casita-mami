@@ -62,7 +62,7 @@ export default function Contacto() {
               Hablemos
             </span>
             <h1 className="font-display text-4xl font-semibold leading-[1.02] tracking-tight text-text-main md:text-[52px]">
-              Estamos cerca, <em className="not-italic font-display italic text-primary">en Surco.</em>
+              Estamos cerca, <em className="font-display italic font-medium text-primary">en Surco.</em>
             </h1>
             <p className="text-lg leading-relaxed text-text-muted">
               Llamada, WhatsApp o visita guiada — el canal que más te acomode.
