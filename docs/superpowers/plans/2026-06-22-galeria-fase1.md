@@ -490,7 +490,7 @@ cd ../..
 
 - [ ] **Step 3: Verificar que el dev server sirve el manifest**
 
-Run: `npm run dev:galeria` y en otra terminal `curl -s http://localhost:5173/manifest.json | head -3` (ajustar puerto al que muestre Vite). Cortar con Ctrl-C.
+Run: `npm run dev:galeria` y en otra terminal `curl -s http://localhost:5173/galeria/manifest.json | head -3` (ajustar puerto al que muestre Vite; el manifest se sirve bajo `/galeria/`). Cortar con Ctrl-C.
 Expected: el JSON del manifest se sirve correctamente.
 
 - [ ] **Step 4: Commit**
