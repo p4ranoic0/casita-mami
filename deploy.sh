@@ -37,6 +37,9 @@ rsync -avz --delete $DRY_RUN \
   --exclude='apple-touch-icon.png' \
   --exclude='fonts/' \
   --exclude='.DS_Store' \
+  --exclude='galeria/' \
+  --exclude='admin/' \
+  --exclude='api/' \
   dist/ "$REMOTE"
 
 if [[ -z "$DRY_RUN" ]]; then
