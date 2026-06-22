@@ -1,10 +1,12 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import Portada from './pages/Portada.jsx'
+import Album from './pages/Album.jsx'
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Portada />} />
+      <Route path="/:slug" element={<Album />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
