@@ -1346,19 +1346,26 @@ readfile($tmp);
 unlink($tmp);
 ```
 
-- [ ] **Step 4: Verificar el endpoint con un servidor PHP local**
+- [ ] **Step 4: Verificar el endpoint (PHP local SI está disponible; si no, en el servidor)**
 
-Run:
+`php` NO está instalado en esta Mac de desarrollo, así que el test local se omite y el
+endpoint se valida en el servidor (Task 12 / producción). Primero confirma que el build
+copia los archivos PHP/.htaccess al output:
 ```bash
 npm run build:galeria
+ls -la dist-galeria | grep -E "download-album.php|404.html|\.htaccess"
+```
+Expected: los tres archivos aparecen en `dist-galeria/` (Vite copia `public/` tal cual, incluidos dotfiles y `.php`).
+
+Si en algún entorno SÍ hubiera `php` disponible, el test funcional sería:
+```bash
 cd dist-galeria && php -S localhost:8899 >/tmp/galphp.log 2>&1 &
 sleep 1
 curl -s -o /tmp/pascua.zip -w "%{http_code} %{content_type}\n" "http://localhost:8899/download-album.php?album=pascua"
-unzip -l /tmp/pascua.zip
-curl -s -o /dev/null -w "slug malo: %{http_code}\n" "http://localhost:8899/download-album.php?album=../etc"
+unzip -l /tmp/pascua.zip                     # debe listar 01.jpeg y 02.jpeg
+curl -s -o /dev/null -w "slug malo: %{http_code}\n" "http://localhost:8899/download-album.php?album=../etc"   # 400
 kill %1; cd ..
 ```
-Expected: `200 application/zip`, el `unzip -l` lista 2 archivos (01.jpeg, 02.jpeg), y el slug malo devuelve `400`.
 
 - [ ] **Step 5: Commit**
 
