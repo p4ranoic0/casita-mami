@@ -1,0 +1,47 @@
+{
+  "generated_at": "2026-06-22T12:00:00Z",
+  "albums": [
+    {
+      "slug": "dia-del-padre",
+      "title": "Día del Padre",
+      "description": "Celebramos a los papás de La Casita con cariño y juegos.",
+      "cover": "media/dia-del-padre/web/01.jpeg",
+      "photos": [
+        { "thumb": "media/dia-del-padre/thumb/01.jpeg", "web": "media/dia-del-padre/web/01.jpeg", "orig": "media/dia-del-padre/orig/01.jpeg", "w": 1280, "h": 853 },
+        { "thumb": "media/dia-del-padre/thumb/02.jpeg", "web": "media/dia-del-padre/web/02.jpeg", "orig": "media/dia-del-padre/orig/02.jpeg", "w": 1280, "h": 853 },
+        { "thumb": "media/dia-del-padre/thumb/03.jpeg", "web": "media/dia-del-padre/web/03.jpeg", "orig": "media/dia-del-padre/orig/03.jpeg", "w": 1280, "h": 853 }
+      ]
+    },
+    {
+      "slug": "dia-del-medio-ambiente",
+      "title": "Día del Medio Ambiente",
+      "description": "Aprendimos a cuidar nuestro planeta sembrando y jugando.",
+      "cover": "media/dia-del-medio-ambiente/web/01.jpeg",
+      "photos": []
+    },
+    {
+      "slug": "dia-de-la-madre",
+      "title": "Día de la Madre",
+      "description": "Un día lleno de abrazos para nuestras mamás.",
+      "cover": "media/dia-de-la-madre/web/01.jpeg",
+      "photos": []
+    },
+    {
+      "slug": "pascua",
+      "title": "Pascua",
+      "description": "Búsqueda de huevitos y mucha alegría en familia.",
+      "cover": "media/pascua/web/01.jpeg",
+      "photos": [
+        { "thumb": "media/pascua/thumb/01.jpeg", "web": "media/pascua/web/01.jpeg", "orig": "media/pascua/orig/01.jpeg", "w": 1280, "h": 853 },
+        { "thumb": "media/pascua/thumb/02.jpeg", "web": "media/pascua/web/02.jpeg", "orig": "media/pascua/orig/02.jpeg", "w": 1280, "h": 853 }
+      ]
+    },
+    {
+      "slug": "dia-de-la-educacion-inicial",
+      "title": "Día de la Educación Inicial",
+      "description": "Festejamos el aprendizaje y el juego de nuestros niños.",
+      "cover": "media/dia-de-la-educacion-inicial/web/01.jpeg",
+      "photos": []
+    }
+  ]
+}
