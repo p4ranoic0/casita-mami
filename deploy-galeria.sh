@@ -28,6 +28,7 @@ echo "🚀 Sincronizando a $REMOTE ..."
 rsync -avz --delete $DRY_RUN \
   --exclude='media/' \
   --exclude='manifest.json' \
+  --exclude='albums.json' \
   --exclude='.DS_Store' \
   dist-galeria/ "$REMOTE"
 

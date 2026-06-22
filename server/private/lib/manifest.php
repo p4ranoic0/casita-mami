@@ -14,6 +14,7 @@ function regenerateManifest(): void {
   $pdo = db();
   $albums = $pdo->query('SELECT * FROM albums WHERE enabled=1 ORDER BY position, id')->fetchAll();
   $out = ['generated_at' => gmdate('c'), 'albums' => []];
+  $index = [];   // índice ligero para el Home del sitio principal
   foreach ($albums as $a) {
     $ph = $pdo->prepare('SELECT * FROM photos WHERE album_id=? ORDER BY position, id');
     $ph->execute([$a['id']]);
@@ -27,6 +28,13 @@ function regenerateManifest(): void {
       'slug' => $a['slug'], 'title' => $a['title'], 'description' => $a['description'],
       'cover' => $cover, 'photos' => $entries,
     ];
+    // índice ligero (solo álbumes activos): portada en thumb + conteo
+    $index[] = [
+      'slug' => $a['slug'], 'title' => $a['title'],
+      'count' => count($entries),
+      'cover' => str_replace('/web/', '/thumb/', $cover),
+    ];
   }
   file_put_contents(MANIFEST_PATH, json_encode($out, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+  file_put_contents(GALERIA_DIR . '/albums.json', json_encode(['albums' => $index], JSON_UNESCAPED_UNICODE));
 }
