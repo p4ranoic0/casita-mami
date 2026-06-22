@@ -1406,7 +1406,7 @@ fi
 
 cd "$PROJECT_DIR"
 
-echo "📦 Building galería (base=/) ..."
+echo "📦 Building galería (base=/galeria/) ..."
 npm run build:galeria
 
 echo "🚀 Sincronizando a $REMOTE ..."
