@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "dev:galeria": "vite --config vite.galeria.config.js",
+    "build:galeria": "vite build --config vite.galeria.config.js",
+    "test": "vitest run --config vitest.config.js"
   },
   "dependencies": {
     "framer-motion": "^12.28.1",

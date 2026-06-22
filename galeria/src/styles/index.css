@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: light; }
+body {
+  margin: 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: #f5fdff;
+  color: #0d2d3a;
+}
+
+/* Keyframes propios de la galería (no tocan el config compartido de Tailwind) */
+@keyframes shimmer {
+  0% { background-position: -800px 0; }
+  100% { background-position: 800px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, #e0f6fc 25%, #d6f0fa 37%, #e0f6fc 63%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+@keyframes title-sweep {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+.title-gradient {
+  background: linear-gradient(90deg, #25c1e9, #7dcfeb, #e8ff52, #25c1e9);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: title-sweep 6s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton, .title-gradient { animation: none; }
+}
