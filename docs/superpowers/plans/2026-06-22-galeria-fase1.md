@@ -170,7 +170,9 @@ import './styles/index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter>
+    {/* basename = /galeria (sin barra final) para que las rutas internas (/, /:slug)
+        funcionen bajo lacasitademami.edu.pe/galeria — mismo patrón que el sitio raíz. */}
+    <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '')}>
       <App />
     </BrowserRouter>
   </React.StrictMode>,
