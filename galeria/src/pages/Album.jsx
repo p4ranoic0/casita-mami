@@ -10,6 +10,7 @@ import { DownloadAlbum } from '../components/DownloadButtons.jsx'
 import { useManifest } from '../lib/useManifest.js'
 import { getAlbumBySlug, photoCount, isAlbumEmpty } from '../lib/gallery.js'
 import { titleReveal } from '../motion/variants.js'
+import MoreAlbums from '../components/MoreAlbums.jsx'
 
 export default function Album() {
   const { slug } = useParams()
@@ -83,6 +84,8 @@ export default function Album() {
         onPrev={() => setIndex((i) => (i - 1 + photos.length) % photos.length)}
         onNext={() => setIndex((i) => (i + 1) % photos.length)}
       />
+
+      <MoreAlbums albums={manifest?.albums ?? []} currentSlug={album.slug} />
 
       <Footer />
     </div>
