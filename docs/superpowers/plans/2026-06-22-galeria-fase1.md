@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Publicar una galería pública vistosa en `galeria.lacasitademami.edu.pe` con 5 álbumes, portada animada, lightbox, y descarga individual y por álbum (ZIP).
+**Goal:** Publicar una galería pública vistosa en `lacasitademami.edu.pe/galeria` (ruta del dominio principal, **sin subdominio**) con 5 álbumes, portada animada, lightbox, y descarga individual y por álbum (ZIP).
 
-**Architecture:** App React+Vite independiente en la carpeta `galeria/` del mismo repo, que reusa `node_modules` y la marca del sitio. Lee un `manifest.json` (en Fase 1, escrito a mano + media de muestra). El motion lo da Framer Motion (ya es dependencia). La descarga del álbum la sirve un único endpoint PHP (`download-album.php`) en el subdominio. Build y deploy propios; los datos (`manifest.json`, `media/`) se separan del código para que un futuro `--delete` no los borre.
+**Architecture:** App React+Vite independiente en la carpeta `galeria/` del mismo repo, que reusa `node_modules` y la marca del sitio. Se compila con `base: '/galeria/'` y se sirve desde `public_html/galeria/` (mismo origen que el sitio, sin CORS, sin crear subdominio). Las rutas de imágenes/manifest/descarga son **base-aware** vía `import.meta.env.BASE_URL`. Lee un `manifest.json` (en Fase 1, escrito a mano + media de muestra). El motion lo da Framer Motion (ya es dependencia). La descarga del álbum la sirve un único endpoint PHP (`download-album.php`) bajo `/galeria`. Build y deploy propios; los datos (`manifest.json`, `media/`) se separan del código para que un futuro `--delete` no los borre.
 
 **Tech Stack:** React 18, React Router 6, Vite 6, Tailwind CSS 3, Framer Motion 12, Vitest (nuevo, para helpers puros), PHP 8.3 + ZipArchive (endpoint de descarga).
 
@@ -19,7 +19,7 @@ vite.galeria.config.js              # config Vite de la galería (root: galeria,
 vitest.config.js                    # config de tests (helpers puros)
 tailwind.config.js                  # MODIFICAR: añadir ./galeria a content
 package.json                        # MODIFICAR: scripts dev:galeria, build:galeria, test
-deploy-galeria.sh                   # NUEVO: deploy del subdominio (excluye datos)
+deploy-galeria.sh                   # NUEVO: deploy de /galeria (excluye datos)
 deploy.sh                           # MODIFICAR: excluir admin/ api/ galeria/
 
 galeria/
@@ -28,9 +28,10 @@ galeria/
     main.jsx                        # root React + BrowserRouter
     App.jsx                         # rutas / y /:slug
     lib/
-      gallery.js                    # helpers puros (TESTED)
+      gallery.js                    # helpers puros (TESTED): incl. assetUrl/albumDownloadUrl(base,...)
       gallery.test.js               # tests Vitest
-      useManifest.js                # hook: fetch /manifest.json
+      paths.js                      # adaptador base-aware (import.meta.env.BASE_URL)
+      useManifest.js                # hook: fetch BASE_URL + manifest.json
     motion/
       variants.js                   # variants de Framer Motion
     components/
@@ -48,7 +49,7 @@ galeria/
       index.css                     # @tailwind + keyframes de la galería
   public/
     manifest.json                   # SEED: 5 álbumes (Fase 1)
-    .htaccess                       # routing SPA del subdominio
+    .htaccess                       # routing SPA (RewriteBase /galeria/)
     404.html                        # fallback SPA
     download-album.php              # endpoint ZIP
     media/<slug>/{thumb,web,orig}/  # SEED: fotos de muestra
@@ -73,11 +74,12 @@ galeria/
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// Build independiente de la galería. root apunta a galeria/, base '/' para el subdominio.
+// Build independiente de la galería. root apunta a galeria/, base '/galeria/'
+// porque la app se sirve en lacasitademami.edu.pe/galeria (ruta, no subdominio).
 export default defineConfig({
   plugins: [react()],
   root: 'galeria',
-  base: '/',
+  base: '/galeria/',
   build: {
     outDir: '../dist-galeria',
     emptyOutDir: true,
@@ -92,7 +94,7 @@ export default defineConfig({
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Galería de fotos de La Casita de Mami — revive cada momento de nuestros eventos." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -212,7 +214,7 @@ Dentro de `"scripts"`, añadir:
 - [ ] **Step 8: Verificar el dev server**
 
 Run: `npm run dev:galeria`
-Expected: Vite arranca; al abrir la URL local se ve "Galería OK". Cortar con Ctrl-C.
+Expected: Vite arranca y sirve bajo `/galeria/` (p. ej. `http://localhost:5173/galeria/`); al abrir esa URL se ve "Galería OK". Cortar con Ctrl-C.
 
 - [ ] **Step 9: Verificar el build**
 
@@ -233,6 +235,7 @@ git commit -m "feat(galeria): scaffold de la app de galería (Vite + React + Tai
 **Files:**
 - Create: `vitest.config.js`
 - Create: `galeria/src/lib/gallery.js`
+- Create: `galeria/src/lib/paths.js`
 - Test: `galeria/src/lib/gallery.test.js`
 - Modify: `package.json` (añadir devDependency `vitest`)
 
@@ -258,7 +261,7 @@ export default defineConfig({
 
 ```js
 import { describe, it, expect } from 'vitest'
-import { getAlbumBySlug, albumDownloadUrl, isAlbumEmpty, photoCount } from './gallery.js'
+import { getAlbumBySlug, albumDownloadUrl, assetUrl, isAlbumEmpty, photoCount } from './gallery.js'
 
 const manifest = {
   albums: [
@@ -281,8 +284,15 @@ describe('getAlbumBySlug', () => {
 })
 
 describe('albumDownloadUrl', () => {
-  it('construye la URL del endpoint ZIP', () => {
-    expect(albumDownloadUrl('dia-del-padre')).toBe('/download-album.php?album=dia-del-padre')
+  it('construye la URL del endpoint ZIP respetando el base', () => {
+    expect(albumDownloadUrl('/galeria/', 'dia-del-padre')).toBe('/galeria/download-album.php?album=dia-del-padre')
+  })
+})
+
+describe('assetUrl', () => {
+  it('antepone el base y normaliza la barra inicial', () => {
+    expect(assetUrl('/galeria/', 'media/pascua/web/01.jpeg')).toBe('/galeria/media/pascua/web/01.jpeg')
+    expect(assetUrl('/galeria/', '/media/pascua/web/01.jpeg')).toBe('/galeria/media/pascua/web/01.jpeg')
   })
 })
 
@@ -315,8 +325,13 @@ export function getAlbumBySlug(manifest, slug) {
   return albums.find((a) => a.slug === slug) ?? null
 }
 
-export function albumDownloadUrl(slug) {
-  return `/download-album.php?album=${encodeURIComponent(slug)}`
+// base-aware: base es import.meta.env.BASE_URL (p. ej. '/galeria/').
+export function assetUrl(base, path) {
+  return base + String(path).replace(/^\/+/, '')
+}
+
+export function albumDownloadUrl(base, slug) {
+  return `${base}download-album.php?album=${encodeURIComponent(slug)}`
 }
 
 export function photoCount(album) {
@@ -333,11 +348,28 @@ export function isAlbumEmpty(album) {
 Run: `npm test`
 Expected: PASS — los 7 casos en verde.
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 7: Crear `galeria/src/lib/paths.js` (adaptador base-aware)**
+
+Lee el `base` una sola vez de Vite y expone helpers sin argumentos para los componentes. No se testea (depende de Vite); la lógica pura ya está cubierta en `gallery.js`.
+
+```js
+import { assetUrl, albumDownloadUrl } from './gallery.js'
+
+// import.meta.env.BASE_URL = '/galeria/' en build y dev (por la config de Vite).
+const BASE = import.meta.env.BASE_URL
+
+// asset('media/x.jpeg') -> '/galeria/media/x.jpeg'
+export const asset = (path) => assetUrl(BASE, path)
+
+// albumZip('pascua') -> '/galeria/download-album.php?album=pascua'
+export const albumZip = (slug) => albumDownloadUrl(BASE, slug)
+```
+
+- [ ] **Step 8: Commit**
 
 ```bash
-git add vitest.config.js galeria/src/lib/gallery.js galeria/src/lib/gallery.test.js package.json package-lock.json
-git commit -m "feat(galeria): helpers puros + Vitest"
+git add vitest.config.js galeria/src/lib/gallery.js galeria/src/lib/paths.js galeria/src/lib/gallery.test.js package.json package-lock.json
+git commit -m "feat(galeria): helpers puros base-aware + Vitest"
 ```
 
 ---
@@ -464,7 +496,7 @@ export function useManifest() {
 
   useEffect(() => {
     let alive = true
-    fetch('/manifest.json', { cache: 'no-cache' })
+    fetch(import.meta.env.BASE_URL + 'manifest.json', { cache: 'no-cache' })
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`)
         return r.json()
@@ -517,16 +549,20 @@ export const pageFade = {
 - [ ] **Step 3: Crear `galeria/src/components/Header.jsx`**
 
 ```jsx
+import { asset } from '../lib/paths.js'
+
 export default function Header() {
   return (
     <header className="sticky top-0 z-30 backdrop-blur bg-background-light/80 border-b border-primary-soft">
       <div className="mx-auto max-w-6xl px-5 h-16 flex items-center justify-between">
-        <a href="/" className="flex items-center gap-3">
-          <img src="/logo.jpg" alt="La Casita de Mami" className="h-9 w-9 rounded-full object-cover" />
+        {/* Logo → portada de la galería (BASE_URL = /galeria/) */}
+        <a href={import.meta.env.BASE_URL} className="flex items-center gap-3">
+          <img src={asset('logo.jpg')} alt="La Casita de Mami" className="h-9 w-9 rounded-full object-cover" />
           <span className="font-display font-semibold text-lg text-text-main">Galería</span>
         </a>
+        {/* Volver al sitio principal (raíz del dominio) */}
         <a
-          href="https://lacasitademami.edu.pe"
+          href="/"
           className="text-sm font-semibold text-primary-dark hover:text-primary transition-colors"
         >
           ← Volver al sitio
@@ -553,7 +589,7 @@ export default function Footer() {
       <div className="mx-auto max-w-6xl px-5 py-10 text-center text-text-muted">
         <p className="font-display text-xl text-text-main">La Casita de Mami</p>
         <p className="mt-2 text-sm">Nido en Surco · Revive cada momento</p>
-        <a href="https://lacasitademami.edu.pe" className="mt-4 inline-block text-sm font-semibold text-primary-dark hover:text-primary">
+        <a href="/" className="mt-4 inline-block text-sm font-semibold text-primary-dark hover:text-primary">
           lacasitademami.edu.pe
         </a>
       </div>
@@ -598,6 +634,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { cardItem } from '../motion/variants.js'
 import { photoCount } from '../lib/gallery.js'
+import { asset } from '../lib/paths.js'
 
 export default function AlbumCard({ album }) {
   const count = photoCount(album)
@@ -609,7 +646,7 @@ export default function AlbumCard({ album }) {
       >
         <div className="aspect-[4/3] overflow-hidden bg-primary-soft">
           <img
-            src={`/${album.cover}`}
+            src={asset(album.cover)}
             alt={album.title}
             loading="lazy"
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
@@ -769,6 +806,7 @@ git commit -m "feat(galeria): página Portada con hero animado y grid de álbume
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { containerStagger, cardItem } from '../motion/variants.js'
+import { asset } from '../lib/paths.js'
 
 // Grid de miniaturas. Cada imagen hace fade-in al cargar (blur-up simple).
 export default function PhotoGrid({ photos, onOpen }) {
@@ -794,7 +832,7 @@ function Thumb({ photo, index, onOpen }) {
       aria-label={`Abrir foto ${index + 1}`}
     >
       <img
-        src={`/${photo.thumb}`}
+        src={asset(photo.thumb)}
         alt={`Foto ${index + 1}`}
         loading="lazy"
         onLoad={() => setLoaded(true)}
@@ -829,13 +867,13 @@ git commit -m "feat(galeria): PhotoGrid con blur-up y stagger"
 
 ```jsx
 import { useState } from 'react'
-import { albumDownloadUrl } from '../lib/gallery.js'
+import { asset, albumZip } from '../lib/paths.js'
 
 // Botón de descarga individual (atributo download, same-origin).
 export function DownloadPhoto({ orig, filename }) {
   return (
     <a
-      href={`/${orig}`}
+      href={asset(orig)}
       download={filename}
       className="inline-flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-sm font-semibold text-primary-dark shadow hover:bg-white transition-colors"
     >
@@ -850,7 +888,7 @@ export function DownloadAlbum({ slug, count }) {
   if (count === 0) return null
   return (
     <a
-      href={albumDownloadUrl(slug)}
+      href={albumZip(slug)}
       onClick={() => { setPreparing(true); setTimeout(() => setPreparing(false), 4000) }}
       className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-button hover:bg-primary-dark transition-colors"
     >
@@ -866,6 +904,7 @@ export function DownloadAlbum({ slug, count }) {
 import { useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { DownloadPhoto } from './DownloadButtons.jsx'
+import { asset } from '../lib/paths.js'
 
 // Lightbox con navegación por teclado/flechas. index === null => cerrado.
 export default function Lightbox({ photos, index, onClose, onPrev, onNext }) {
@@ -906,7 +945,7 @@ export default function Lightbox({ photos, index, onClose, onPrev, onNext }) {
             onClick={(e) => e.stopPropagation()}
             className="flex max-h-[90vh] max-w-[92vw] flex-col items-center gap-4"
           >
-            <img src={`/${photo.web}`} alt="" className="max-h-[78vh] max-w-full rounded-lg object-contain shadow-brand" />
+            <img src={asset(photo.web)} alt="" className="max-h-[78vh] max-w-full rounded-lg object-contain shadow-brand" />
             <div className="flex items-center gap-3">
               <span className="text-sm text-white/70">{index + 1} / {photos.length}</span>
               <DownloadPhoto orig={photo.orig} filename={`la-casita-${index + 1}.jpeg`} />
@@ -1087,6 +1126,7 @@ git commit -m "feat(galeria): página Álbum con grid, lightbox, descargas y est
 
 ```jsx
 import { Link } from 'react-router-dom'
+import { asset } from '../lib/paths.js'
 
 // Carrusel horizontal de otros álbumes para invitar a seguir navegando.
 export default function MoreAlbums({ albums, currentSlug }) {
@@ -1100,7 +1140,7 @@ export default function MoreAlbums({ albums, currentSlug }) {
           <Link key={a.slug} to={`/${a.slug}`}
             className="group relative w-56 shrink-0 snap-start overflow-hidden rounded-xl shadow-card">
             <div className="aspect-[4/3] overflow-hidden bg-primary-soft">
-              <img src={`/${a.cover}`} alt={a.title} loading="lazy"
+              <img src={asset(a.cover)} alt={a.title} loading="lazy"
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
             </div>
             <div className="absolute inset-0 bg-gradient-to-t from-primary/70 to-transparent" />
@@ -1179,7 +1219,7 @@ git commit -m "feat(galeria): carrusel 'Más álbumes' y transición de página"
 
 ---
 
-## Task 10: Routing del subdominio (.htaccess + 404) y endpoint de descarga PHP
+## Task 10: Routing de /galeria (.htaccess + 404) y endpoint de descarga PHP
 
 **Files:**
 - Create: `galeria/public/.htaccess`
@@ -1204,15 +1244,17 @@ git commit -m "feat(galeria): carrusel 'Más álbumes' y transición de página"
   AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json
 </IfModule>
 
-# Routing SPA: archivos/carpetas reales (incluye download-album.php y media/) se sirven directo;
-# todo lo demás cae en index.html para que /dia-del-padre funcione.
+# Routing SPA bajo /galeria. Este .htaccess vive en public_html/galeria/ y tiene su
+# propio RewriteEngine On, así que NO hereda las reglas del .htaccess del dominio
+# principal. Archivos/carpetas reales (incluye download-album.php y media/) se sirven
+# directo; el resto cae en /galeria/index.html para que /galeria/dia-del-padre funcione.
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  RewriteBase /
+  RewriteBase /galeria/
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule . /index.html [L]
+  RewriteRule . /galeria/index.html [L]
 </IfModule>
 ```
 
@@ -1222,8 +1264,8 @@ git commit -m "feat(galeria): carrusel 'Más álbumes' y transición de página"
 <!DOCTYPE html>
 <html lang="es"><head><meta charset="UTF-8" />
 <script>
-  // Fallback SPA: cualquier 404 redirige a la raíz, el router resuelve el slug.
-  location.replace('/');
+  // Fallback SPA: cualquier 404 redirige a la portada de la galería; el router resuelve el slug.
+  location.replace('/galeria/');
 </script></head><body></body></html>
 ```
 
@@ -1297,7 +1339,7 @@ Expected: `200 application/zip`, el `unzip -l` lista 2 archivos (01.jpeg, 02.jpe
 
 ```bash
 git add galeria/public/.htaccess galeria/public/404.html galeria/public/download-album.php
-git commit -m "feat(galeria): routing SPA del subdominio y endpoint ZIP de descarga"
+git commit -m "feat(galeria): routing SPA de /galeria y endpoint ZIP de descarga"
 ```
 
 ---
@@ -1313,9 +1355,9 @@ git commit -m "feat(galeria): routing SPA del subdominio y endpoint ZIP de desca
 ```bash
 #!/bin/bash
 # ============================================
-# Deploy galería → galeria.lacasitademami.edu.pe
+# Deploy galería → lacasitademami.edu.pe/galeria  (ruta, NO subdominio)
 # Uso: ./deploy-galeria.sh [--dry-run]
-# Requiere: subdominio 'galeria' creado en hPanel apuntando a public_html/galeria
+# El build ya usa base=/galeria/ (vite.galeria.config.js); no requiere subdominio.
 # ============================================
 set -euo pipefail
 
@@ -1345,7 +1387,7 @@ rsync -avz --delete $DRY_RUN \
   dist-galeria/ "$REMOTE"
 
 if [[ -z "$DRY_RUN" ]]; then
-  echo "✅ Listo → https://galeria.lacasitademami.edu.pe"
+  echo "✅ Listo → https://lacasitademami.edu.pe/galeria"
 else
   echo "✅ Dry-run terminado."
 fi
@@ -1383,7 +1425,7 @@ Expected: build OK + rsync en modo dry-run lista lo que subiría (sin `media/` n
 
 ```bash
 git add deploy-galeria.sh deploy.sh
-git commit -m "chore(galeria): script de deploy del subdominio + proteger datos en deploy principal"
+git commit -m "chore(galeria): script de deploy de /galeria + proteger datos en deploy principal"
 ```
 
 ---
@@ -1402,21 +1444,22 @@ Expected: PASS (helpers de `gallery.js`).
 Run: `npm run build:galeria`
 Expected: build sin errores; `dist-galeria/` contiene `index.html`, `assets/`, `manifest.json`, `media/`, `download-album.php`, `.htaccess`, `404.html`.
 
-- [ ] **Step 3: Verificación visual completa (servidor PHP local sobre el build)**
+- [ ] **Step 3: Verificación visual completa (dev server, bajo `/galeria/`)**
 
-Run: `cd dist-galeria && php -S localhost:8899` y abrir `http://localhost:8899` en el navegador.
+Run: `npm run dev:galeria` y abrir `http://localhost:5173/galeria/` (ajustar puerto al que muestre Vite).
 Checklist:
 - Portada: título con degradado animado, 5 tarjetas con stagger + hover.
-- Entrar a "Día del Padre": título animado, grid con blur-up, lightbox con flechas/teclado.
-- "Descargar álbum (3)" baja un ZIP; "Descargar original" baja una foto.
+- Entrar a "Día del Padre" (`/galeria/dia-del-padre`): título animado, grid con blur-up, lightbox con flechas/teclado.
+- "Descargar original" baja una foto (same-origin). _(La "Descarga de álbum" usa PHP y se valida en Task 10 Step 4 y en producción — el dev server de Vite no ejecuta PHP.)_
 - "Día de la Madre": estado vacío.
-- URL directa `http://localhost:8899/pascua` carga el álbum (gracias al routing).
+- URL directa `http://localhost:5173/galeria/pascua` carga el álbum (routing del dev server).
 - "Más álbumes" aparece al final.
 Cortar con Ctrl-C.
 
-- [ ] **Step 4 (infra, manual en hPanel): crear el subdominio**
+- [ ] **Step 4 (infra): NO se crea subdominio**
 
-En hPanel → Subdominios → crear `galeria` para `lacasitademami.edu.pe` con *document root* `public_html/galeria`. (El DNS ya está configurado.)
+La galería es una ruta (`/galeria`), no un subdominio. La carpeta `public_html/galeria/`
+se crea sola con el primer deploy (rsync). No hay que tocar hPanel.
 
 - [ ] **Step 5: Primer deploy real**
 
@@ -1427,12 +1470,12 @@ Run:
 rsync -avz dist-galeria/media/ hostinger:~/domains/lacasitademami.edu.pe/public_html/galeria/media/
 rsync -avz dist-galeria/manifest.json hostinger:~/domains/lacasitademami.edu.pe/public_html/galeria/manifest.json
 ```
-Expected: el sitio queda en `https://galeria.lacasitademami.edu.pe`.
+Expected: el sitio queda en `https://lacasitademami.edu.pe/galeria`.
 
 - [ ] **Step 6: Verificación en producción**
 
-Abrir `https://galeria.lacasitademami.edu.pe` y `https://galeria.lacasitademami.edu.pe/dia-del-padre` directo (probar refrescar la página del álbum para validar el routing del subdominio). Probar una descarga individual y una de álbum.
-Expected: todo funciona; el enlace directo a un álbum carga sin 404.
+Abrir `https://lacasitademami.edu.pe/galeria` y `https://lacasitademami.edu.pe/galeria/dia-del-padre` directo (refrescar la página del álbum para validar el routing de `/galeria`). Probar una descarga individual y una de álbum (ZIP).
+Expected: todo funciona; el enlace directo a un álbum carga sin 404; el sitio principal en `/` sigue intacto.
 
 - [ ] **Step 7: Confirmar que el deploy del sitio principal no rompe nada**
 
@@ -1443,7 +1486,7 @@ Expected: el dry-run muestra que `galeria/`, `admin/` y `api/` están excluidos 
 
 ## Self-Review (cobertura del spec)
 
-- **Subdominio + 5 álbumes + URLs limpias** → Tasks 0, 5, 8, 10. ✓
+- **Ruta `/galeria` + 5 álbumes + URLs limpias (base-aware)** → Tasks 0, 1 (paths.js), 5, 8, 10. ✓
 - **Vistoso / motion / título con efecto / paleta turquesa+verde** → Tasks 0 (keyframes), 3 (variants), 5 (hero), 8 (cabecera álbum). ✓
 - **Animación de carga** → Skeletons (Tasks 4, 5, 8) + blur-up (Task 6). ✓
 - **Retención (que vuelva)** → MoreAlbums + transición de página (Task 9). ✓

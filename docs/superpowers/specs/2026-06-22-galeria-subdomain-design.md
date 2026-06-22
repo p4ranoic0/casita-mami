@@ -1,4 +1,4 @@
-# Diseño — Galería autogestionable `galeria.lacasitademami.edu.pe`
+# Diseño — Galería autogestionable `lacasitademami.edu.pe/galeria`
 
 - **Fecha:** 2026-06-22
 - **Estado:** Aprobado (diseño) — pendiente plan de implementación
@@ -6,11 +6,17 @@
 
 ## 1. Objetivo
 
-Crear un sitio de galería de fotos en el subdominio `galeria.lacasitademami.edu.pe`
-para mostrar los eventos del nido, organizados en **5 álbumes**, con URLs limpias
-(`/dia-del-padre`, etc.). El sitio debe ser **autogestionable** desde un panel de
-administración (login) en el dominio central, **sin depender de ningún servicio
-externo**: todo vive en el hosting propio (Hostinger).
+Crear un sitio de galería de fotos en la ruta **`lacasitademami.edu.pe/galeria`**
+(dentro del dominio principal — **sin subdominio**) para mostrar los eventos del nido,
+organizados en **5 álbumes**, con URLs limpias (`/galeria/dia-del-padre`, etc.). El
+sitio debe ser **autogestionable** desde un panel de administración (login) en el mismo
+dominio (`/admin`), **sin depender de ningún servicio externo**: todo vive en el
+hosting propio (Hostinger).
+
+> **Decisión 2026-06-22:** se descarta el subdominio `galeria.lacasitademami.edu.pe`.
+> La galería se sirve como **ruta `/galeria`** del dominio principal. Mismo origen que
+> el sitio y el admin (sin CORS), sin crear nada en hPanel. La carpeta en el servidor
+> sigue siendo `public_html/galeria/`. La app React se compila con `base: '/galeria/'`.
 
 Comportamiento de imágenes estilo *Adobe Portfolio*: se ven en versión **comprimida**
 (rápida) y se pueden **descargar en tamaño original**.
@@ -40,7 +46,7 @@ describir, habilitar/deshabilitar y reordenar. Estos 5 son el contenido inicial.
 | Subida | `upload_max_filesize` = `post_max_size` = 1536 MB; `memory_limit` 1536 MB; `max_execution_time` 0 |
 | Disco | holgado |
 | `public_html/galeria/` | no existe aún (se crea) |
-| Usuario del sistema | `u128657715` (mismo para los 3 dominios → PHP del dominio central puede escribir en la carpeta del subdominio) |
+| Usuario del sistema | `u128657715` (mismo para los 3 dominios → PHP puede escribir en la carpeta `galeria/`) |
 | Dominios en la cuenta | `lacasitademami.edu.pe`, `henrrygarcia.com`, `evolushonsurfexperience.com` |
 
 **Consecuencia:** no se necesita MySQL ni configuración en hPanel para datos.
@@ -51,7 +57,7 @@ Se usa **SQLite** (un archivo), creado y administrado por SSH/PHP.
 La regla SPA existente ya incluye `RewriteCond %{REQUEST_FILENAME} !-f` y `!-d`.
 Por lo tanto **`admin/` (directorio) y `api/*.php` (archivos reales) se sirven
 directamente** sin que el routing de React los intercepte. No se requiere modificar
-el `.htaccess` del dominio central. El subdominio usa su **propio** `.htaccess`.
+el `.htaccess` del dominio central. La carpeta `galeria/` usa su **propio** `.htaccess`.
 
 ## 4. Decisiones de arquitectura
 
@@ -89,9 +95,9 @@ el `.htaccess` del dominio central. El subdominio usa su **propio** `.htaccess`.
 │   │   ├─ upload.php               # subir 1 foto, generar thumb/web/orig
 │   │   ├─ reorder.php              # reordenar fotos y álbumes
 │   │   └─ delete-photo.php
-│   └─ galeria/                     # galeria.lacasitademami.edu.pe (raíz del subdominio)
+│   └─ galeria/                     # lacasitademami.edu.pe/galeria (ruta, NO subdominio)
 │       ├─ index.html  assets/ ...  # build React de la galería (CÓDIGO)
-│       ├─ .htaccess  404.html      # routing SPA del subdominio (URLs limpias)
+│       ├─ .htaccess  404.html      # routing SPA de /galeria (URLs limpias)
 │       ├─ download-album.php       # CÓDIGO: arma ZIP de orig/ al vuelo (público, solo lectura)
 │       ├─ manifest.json            # ⚠ DATO: solo álbumes habilitados
 │       └─ media/<slug>/            # ⚠ DATO: fotos subidas
@@ -100,8 +106,12 @@ el `.htaccess` del dominio central. El subdominio usa su **propio** `.htaccess`.
 │           └─ orig/    (original, descarga)
 ```
 
-**Nota subdominio:** al crear `galeria` en hPanel, su *document root* debe apuntar a
-`public_html/galeria`. El DNS ya está configurado; falta crear el subdominio/carpeta.
+**Nota ruta:** la galería se sirve como `/galeria` (carpeta `public_html/galeria/`,
+mismo origen que el sitio). **No se crea subdominio.** La app se compila con
+`base: '/galeria/'`; las rutas de imágenes son base-aware (`import.meta.env.BASE_URL`).
+La carpeta `galeria/` lleva su propio `.htaccess` con `RewriteBase /galeria/`, de modo
+que `/galeria/dia-del-padre` cae en `/galeria/index.html` (el `.htaccess` de la subcarpeta
+no hereda el del padre cuando tiene su propio `RewriteEngine On`).
 
 ## 6. Modelo de datos (SQLite)
 
@@ -153,7 +163,7 @@ CREATE TABLE photos (
 
 Se regenera tras **cada** cambio del admin. La galería pública solo lee este archivo.
 
-## 7. Galería pública (subdominio) — marca y UX
+## 7. Galería pública (ruta /galeria) — marca y UX
 
 Reusa los tokens de `tailwind.config.js`:
 - Tipografías: **Fraunces** (display) + **Plus Jakarta Sans** (sans).
@@ -164,15 +174,15 @@ Reusa los tokens de `tailwind.config.js`:
 Objetivo de experiencia: una galería **muy vistosa** que invite a explorar y **volver**.
 Se logra con motion cuidado, juego de paleta (turquesa + verde) y micro-interacciones.
 
-Páginas y rutas:
-- `/` — **Portada:** grid editorial de tarjetas (portada + título por álbum). Solo álbumes habilitados. Header con logo y enlace de regreso a `lacasitademami.edu.pe`; footer consistente. CTA emocional ("Revive cada momento").
-- `/<slug>` — **Álbum:** entrada con animación (ver §7.1), título con efecto, grid de miniaturas (`thumb`) que abren un **lightbox** con la versión `web` (comprimida), navegación (flechas + teclado + swipe) y **descargas** (ver §7.2). Al final del álbum, un carrusel "Más álbumes" para seguir navegando (retención).
+Páginas y rutas (router con `basename="/galeria"`):
+- `/galeria` — **Portada:** grid editorial de tarjetas (portada + título por álbum). Solo álbumes habilitados. Header con logo y enlace de regreso al sitio (`/`); footer consistente. CTA emocional ("Revive cada momento").
+- `/galeria/<slug>` — **Álbum:** entrada con animación (ver §7.1), título con efecto, grid de miniaturas (`thumb`) que abren un **lightbox** con la versión `web` (comprimida), navegación (flechas + teclado + swipe) y **descargas** (ver §7.2). Al final del álbum, un carrusel "Más álbumes" para seguir navegando (retención).
 - Estado vacío por álbum: "Pronto subiremos las fotos de este evento" (con ilustración/animación sutil).
 - 404 / slug inexistente → vuelve a la portada.
 
-URLs limpias: `.htaccess` propio del subdominio con rewrite a `index.html` + copia
-`404.html` (mismo patrón que el sitio actual) para que un enlace compartido por
-WhatsApp abra directo el álbum.
+URLs limpias: `.htaccess` en `galeria/` con `RewriteBase /galeria/` y rewrite a
+`/galeria/index.html` + copia `404.html` que redirige a `/galeria/`, para que un enlace
+compartido por WhatsApp abra directo el álbum (mismo patrón SPA del sitio actual).
 
 ### 7.1 Dirección visual y motion
 
@@ -191,7 +201,7 @@ Stack de animación: **Framer Motion** (ya es dependencia del repo, `framer-moti
 ### 7.2 Descargas (estilo Adobe Portfolio)
 
 - **Foto individual:** botón **Descargar original** en el lightbox → archivo `orig/` vía atributo `download` (same-origin, sin recomprimir). Lo que se *ve* es la versión `web` comprimida; lo que se *descarga* es el original.
-- **Álbum completo:** botón **Descargar álbum** → llama a `galeria/download-album.php?album=<slug>` que arma un **ZIP** de todos los `orig/` del álbum al vuelo con `ZipArchive` y lo transmite (server-side, soporta álbumes grandes, poco consumo en el navegador). Endpoint **público** (solo lectura, no requiere login) y validado contra la lista de slugs del manifiesto. En la UI, botón con estado "Preparando ZIP…" para dar feedback.
+- **Álbum completo:** botón **Descargar álbum** → llama a `/galeria/download-album.php?album=<slug>` (URL base-aware con `import.meta.env.BASE_URL`) que arma un **ZIP** de todos los `orig/` del álbum al vuelo con `ZipArchive` y lo transmite (server-side, soporta álbumes grandes, poco consumo en el navegador). Endpoint **público** (solo lectura, no requiere login) y validado contra la lista de slugs del manifiesto. En la UI, botón con estado "Preparando ZIP…" para dar feedback.
 
 ## 8. Pipeline de imágenes (al subir, en `upload.php`)
 
@@ -249,14 +259,14 @@ Sin esto, un `rsync --delete` borraría el admin o las fotos subidas.
 ## 13. Plan por fases
 
 ### Fase 1 — Galería pública (vistosa, sin admin)
-App React del subdominio que lee `manifest.json`. Se arranca con un manifiesto escrito
+App React de `/galeria` que lee `manifest.json`. Se arranca con un manifiesto escrito
 a mano: los 5 álbumes con portadas reusando fotos existentes del sitio, y **fotos de
 muestra sembradas en 1–2 álbumes** para validar la grilla, el lightbox y las descargas.
 Incluye toda la **dirección visual y motion** (§7.1), **descarga individual** y el
 endpoint **`download-album.php`** para la descarga del álbum (§7.2).
-**Entregable:** galería online vistosa y navegable (portada animada + 5 álbumes +
-lightbox + descarga individual y por álbum), deploy al subdominio funcionando.
-Valida front-end, marca, motion, routing, descargas y deploy.
+**Entregable:** galería online vistosa y navegable en `lacasitademami.edu.pe/galeria`
+(portada animada + 5 álbumes + lightbox + descarga individual y por álbum), deploy a
+la ruta `/galeria` funcionando. Valida front-end, marca, motion, routing, descargas y deploy.
 
 ### Fase 2 — Backend admin (PHP)
 Login, CRUD de álbumes (nombre/descripción/habilitar), subida masiva con progreso,
@@ -274,6 +284,7 @@ desechado mínimo: ya lee un manifiesto).
 
 ## 15. Tareas de infraestructura (una sola vez, por SSH/hPanel)
 
-- Crear subdominio `galeria` en hPanel apuntando a `public_html/galeria`.
+- **(Ya no se crea subdominio.)** La galería vive como ruta `/galeria` →
+  carpeta `public_html/galeria/` (se crea con el primer deploy).
 - Crear `private/` con `config.php` (hash de contraseña) y `gallery.db` (esquema).
 - Crear estructura `public_html/galeria/media/<slug>/{thumb,web,orig}`.
