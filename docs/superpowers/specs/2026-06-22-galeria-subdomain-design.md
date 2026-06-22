@@ -34,6 +34,8 @@ describir, habilitar/deshabilitar y reordenar. Estos 5 son el contenido inicial.
 |---|---|
 | PHP | 8.3.30 |
 | Imágenes | extensiones `gd` **y** `imagick` disponibles |
+| ZIP | extensión `zip` + clase `ZipArchive` OK (descarga de álbum) |
+| Metadatos | extensión `exif` OK (lectura/strip de GPS) |
 | BD local | `sqlite3` + `pdo_sqlite` (también `mysqli`/`pdo_mysql`) |
 | Subida | `upload_max_filesize` = `post_max_size` = 1536 MB; `memory_limit` 1536 MB; `max_execution_time` 0 |
 | Disco | holgado |
@@ -90,6 +92,7 @@ el `.htaccess` del dominio central. El subdominio usa su **propio** `.htaccess`.
 │   └─ galeria/                     # galeria.lacasitademami.edu.pe (raíz del subdominio)
 │       ├─ index.html  assets/ ...  # build React de la galería (CÓDIGO)
 │       ├─ .htaccess  404.html      # routing SPA del subdominio (URLs limpias)
+│       ├─ download-album.php       # CÓDIGO: arma ZIP de orig/ al vuelo (público, solo lectura)
 │       ├─ manifest.json            # ⚠ DATO: solo álbumes habilitados
 │       └─ media/<slug>/            # ⚠ DATO: fotos subidas
 │           ├─ thumb/   (~480px)
@@ -154,18 +157,41 @@ Se regenera tras **cada** cambio del admin. La galería pública solo lee este a
 
 Reusa los tokens de `tailwind.config.js`:
 - Tipografías: **Fraunces** (display) + **Plus Jakarta Sans** (sans).
-- Color primario turquesa `#25c1e9`, fondos `#f5fdff` / superficies blancas, texto `#0d2d3a`.
+- Color primario turquesa `#25c1e9`, celeste `#7dcfeb`, fondos `#f5fdff` / superficies blancas, texto `#0d2d3a`.
+- **Acentos verdes/lima** `#e8ff52` / butter `#f5ffb8` para chispazos de color.
 - Bordes redondeados generosos (`rounded-xl/2xl`) y sombras `shadow-card`/`shadow-brand`.
 
+Objetivo de experiencia: una galería **muy vistosa** que invite a explorar y **volver**.
+Se logra con motion cuidado, juego de paleta (turquesa + verde) y micro-interacciones.
+
 Páginas y rutas:
-- `/` — **Portada:** grid editorial de tarjetas (portada + título por álbum). Solo álbumes habilitados. Header con logo y enlace de regreso a `lacasitademami.edu.pe`; footer consistente.
-- `/<slug>` — **Álbum:** título + descripción + grid de miniaturas (`thumb`) que abren un **lightbox** mostrando la versión `web` (comprimida), con navegación (flechas + teclado) y botón **Descargar original** (`orig`, same-origin → atributo `download` funciona).
-- Estado vacío por álbum: "Pronto subiremos las fotos de este evento".
+- `/` — **Portada:** grid editorial de tarjetas (portada + título por álbum). Solo álbumes habilitados. Header con logo y enlace de regreso a `lacasitademami.edu.pe`; footer consistente. CTA emocional ("Revive cada momento").
+- `/<slug>` — **Álbum:** entrada con animación (ver §7.1), título con efecto, grid de miniaturas (`thumb`) que abren un **lightbox** con la versión `web` (comprimida), navegación (flechas + teclado + swipe) y **descargas** (ver §7.2). Al final del álbum, un carrusel "Más álbumes" para seguir navegando (retención).
+- Estado vacío por álbum: "Pronto subiremos las fotos de este evento" (con ilustración/animación sutil).
 - 404 / slug inexistente → vuelve a la portada.
 
 URLs limpias: `.htaccess` propio del subdominio con rewrite a `index.html` + copia
 `404.html` (mismo patrón que el sitio actual) para que un enlace compartido por
 WhatsApp abra directo el álbum.
+
+### 7.1 Dirección visual y motion
+
+Stack de animación: **Framer Motion** (ya es dependencia del repo, `framer-motion@12`) + Tailwind. Todo respeta `prefers-reduced-motion`.
+
+- **Paleta en movimiento:** fondos con degradados/blobs suaves turquesa→celeste y chispazos lima; hover de tarjetas con overlay de color de marca y zoom de imagen.
+- **Portada:** título display (Fraunces) con efecto de entrada (revelado por máscara / barrido de degradado turquesa→lima); tarjetas de álbum entran en *stagger* (fade + scale + leve translateY), hover con elevación (`shadow-card-hover`), zoom de portada y subrayado animado del título.
+- **Entrada al álbum:**
+  - **Animación de carga:** *skeletons* con shimmer en la grilla mientras cargan las imágenes; loader lúdico (blob/puntos en colores de marca).
+  - **Título con efecto:** nombre grande en Fraunces que entra con slide-up + barrido de color y una línea/acento lima que se "dibuja".
+  - **Grid:** miniaturas entran en *stagger* (fade/scale) a medida que cargan; layout tipo *masonry*.
+  - **Lightbox:** apertura con *shared layout transition* (zoom desde la miniatura, `layoutId` de Framer Motion), fondo con blur; navegación suave entre fotos.
+- **Retención:** transiciones de página portada↔álbum, micro-interacciones de hover/tap, carrusel "Más álbumes" al final, y CTA de regreso.
+- **Rendimiento (que el motion no trabe):** `loading="lazy"` en imágenes, *blur-up* placeholder, animaciones por transform/opacity (GPU), e *intersection observer* para animar solo lo visible.
+
+### 7.2 Descargas (estilo Adobe Portfolio)
+
+- **Foto individual:** botón **Descargar original** en el lightbox → archivo `orig/` vía atributo `download` (same-origin, sin recomprimir). Lo que se *ve* es la versión `web` comprimida; lo que se *descarga* es el original.
+- **Álbum completo:** botón **Descargar álbum** → llama a `galeria/download-album.php?album=<slug>` que arma un **ZIP** de todos los `orig/` del álbum al vuelo con `ZipArchive` y lo transmite (server-side, soporta álbumes grandes, poco consumo en el navegador). Endpoint **público** (solo lectura, no requiere login) y validado contra la lista de slugs del manifiesto. En la UI, botón con estado "Preparando ZIP…" para dar feedback.
 
 ## 8. Pipeline de imágenes (al subir, en `upload.php`)
 
@@ -222,11 +248,15 @@ Sin esto, un `rsync --delete` borraría el admin o las fotos subidas.
 
 ## 13. Plan por fases
 
-### Fase 1 — Galería pública (estática, sin backend)
+### Fase 1 — Galería pública (vistosa, sin admin)
 App React del subdominio que lee `manifest.json`. Se arranca con un manifiesto escrito
-a mano: los 5 álbumes con portadas reusando fotos existentes del sitio.
-**Entregable:** galería online y navegable (portada + 5 álbumes + lightbox + descarga),
-deploy al subdominio funcionando. Valida front-end, marca, routing y deploy.
+a mano: los 5 álbumes con portadas reusando fotos existentes del sitio, y **fotos de
+muestra sembradas en 1–2 álbumes** para validar la grilla, el lightbox y las descargas.
+Incluye toda la **dirección visual y motion** (§7.1), **descarga individual** y el
+endpoint **`download-album.php`** para la descarga del álbum (§7.2).
+**Entregable:** galería online vistosa y navegable (portada animada + 5 álbumes +
+lightbox + descarga individual y por álbum), deploy al subdominio funcionando.
+Valida front-end, marca, motion, routing, descargas y deploy.
 
 ### Fase 2 — Backend admin (PHP)
 Login, CRUD de álbumes (nombre/descripción/habilitar), subida masiva con progreso,
