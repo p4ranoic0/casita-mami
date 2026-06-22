@@ -15,14 +15,17 @@
 ## Estructura de archivos (Fase 1)
 
 ```
-vite.galeria.config.js              # config Vite de la galería (root: galeria, base: /)
+vite.galeria.config.js              # config Vite de la galería (root: galeria, base: /galeria/)
 vitest.config.js                    # config de tests (helpers puros)
-tailwind.config.js                  # MODIFICAR: añadir ./galeria a content
 package.json                        # MODIFICAR: scripts dev:galeria, build:galeria, test
 deploy-galeria.sh                   # NUEVO: deploy de /galeria (excluye datos)
 deploy.sh                           # MODIFICAR: excluir admin/ api/ galeria/
+# NOTA: NO se toca el tailwind.config.js raíz (tiene WIP del usuario). La galería
+# usa su propia config de Tailwind/PostCSS que hereda el tema raíz vía presets.
 
 galeria/
+  tailwind.config.js                # config Tailwind propia (presets: [raíz] + content galeria)
+  postcss.config.js                 # PostCSS propio que apunta a galeria/tailwind.config.js
   index.html                        # entry HTML (fuentes de marca)
   src/
     main.jsx                        # root React + BrowserRouter
@@ -65,8 +68,10 @@ galeria/
 - Create: `galeria/src/main.jsx`
 - Create: `galeria/src/App.jsx`
 - Create: `galeria/src/styles/index.css`
+- Create: `galeria/tailwind.config.js`
+- Create: `galeria/postcss.config.js`
 - Modify: `package.json` (scripts)
-- Modify: `tailwind.config.js` (content)
+- **NO** modificar `tailwind.config.js` raíz (tiene WIP del usuario)
 
 - [ ] **Step 1: Crear `vite.galeria.config.js`**
 
@@ -188,17 +193,37 @@ function App() {
 export default App
 ```
 
-- [ ] **Step 6: Modificar `tailwind.config.js` — añadir la galería a `content`**
+- [ ] **Step 6: Crear config propia de Tailwind/PostCSS para la galería**
 
-Cambiar el array `content` para que Tailwind escanee también la galería:
+> ⚠ El `tailwind.config.js` raíz tiene cambios sin commitear del usuario. **No lo toques.**
+> La galería usa su propia config que **hereda el tema raíz** vía `presets` (DRY: mismos
+> colores, fuentes, sombras) y define su propio `content`. Tailwind resuelve los globs de
+> `content` relativos al **cwd** (raíz del repo, donde corre npm), por eso van como `./galeria/...`.
+
+Crear `galeria/tailwind.config.js`:
 
 ```js
+import root from '../tailwind.config.js'
+
+/** @type {import('tailwindcss').Config} */
+export default {
+  presets: [root],
   content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-    "./galeria/index.html",
-    "./galeria/src/**/*.{js,jsx}",
+    './galeria/index.html',
+    './galeria/src/**/*.{js,jsx}',
   ],
+}
+```
+
+Crear `galeria/postcss.config.js` (Vite lo toma porque `root: 'galeria'`):
+
+```js
+export default {
+  plugins: {
+    tailwindcss: { config: './galeria/tailwind.config.js' },
+    autoprefixer: {},
+  },
+}
 ```
 
 - [ ] **Step 7: Modificar `package.json` — añadir scripts**
@@ -224,7 +249,7 @@ Expected: build exitoso, se genera `dist-galeria/index.html` y `dist-galeria/ass
 - [ ] **Step 10: Commit**
 
 ```bash
-git add vite.galeria.config.js galeria/index.html galeria/src/main.jsx galeria/src/App.jsx galeria/src/styles/index.css tailwind.config.js package.json
+git add vite.galeria.config.js galeria/index.html galeria/src/main.jsx galeria/src/App.jsx galeria/src/styles/index.css galeria/tailwind.config.js galeria/postcss.config.js package.json
 git commit -m "feat(galeria): scaffold de la app de galería (Vite + React + Tailwind)"
 ```
 
