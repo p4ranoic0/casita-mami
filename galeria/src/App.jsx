@@ -1,9 +1,11 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
+import Portada from './pages/Portada.jsx'
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<h1 className="p-8 text-3xl font-display">Galería OK</h1>} />
+      <Route path="/" element={<Portada />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
 }
