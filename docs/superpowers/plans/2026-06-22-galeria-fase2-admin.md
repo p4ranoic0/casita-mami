@@ -78,8 +78,8 @@ Rutas derivadas (no se guardan): `media/<slug>/{thumb,web}/<filename>.jpg`, `ori
 ```php
 <?php
 // Rutas absolutas del proyecto en el servidor. PRIVATE_DIR = dir de este archivo / ..
-define('PRIVATE_DIR', dirname(__DIR__));
-define('DOMAIN_DIR', dirname(dirname(PRIVATE_DIR)));         // ~/domains/<dominio>
+define('PRIVATE_DIR', dirname(__DIR__));                     // .../<dominio>/private
+define('DOMAIN_DIR', dirname(PRIVATE_DIR));                  // .../<dominio>
 define('GALERIA_DIR', DOMAIN_DIR . '/public_html/galeria');
 define('MEDIA_DIR', GALERIA_DIR . '/media');
 define('MANIFEST_PATH', GALERIA_DIR . '/manifest.json');
@@ -346,12 +346,9 @@ function regenerateManifest(): void {
 
 ```php
 <?php
-$L = dirname(dirname(__DIR__)) . '/private/lib';   // public/api -> ../../private/lib  (en repo)
-// En el servidor, private/ es hermano de public_html/. Resolvemos por ruta conocida:
-$libCandidates = [
-  $_SERVER['DOCUMENT_ROOT'] . '/../../private/lib',   // public_html/api -> domains/<d>/private/lib
-];
-foreach ($libCandidates as $c) { if (is_dir($c)) { $L = $c; break; } }
+// lib relativo a ESTE archivo: api/ -> (public_html|public) -> <dominio|server> -> private/lib
+// Funciona igual en el repo (server/public/api) y en el servidor (public_html/api).
+$L = dirname(dirname(__DIR__)) . '/private/lib';
 require_once "$L/db.php"; require_once "$L/auth.php"; require_once "$L/csrf.php";
 require_once "$L/images.php"; require_once "$L/manifest.php";
 header('Content-Type: application/json; charset=utf-8');
@@ -499,7 +496,8 @@ echo json_encode(['ok'=>true]);
 
 ```php
 <?php
-$L = $_SERVER['DOCUMENT_ROOT'] . '/../../private/lib';
+// lib relativo a ESTE archivo (admin/ -> public_html -> <dominio> -> private/lib)
+$L = dirname(dirname(__DIR__)) . '/private/lib';
 require_once "$L/db.php"; require_once "$L/auth.php"; require_once "$L/csrf.php"; require_once "$L/manifest.php";
 ```
 
