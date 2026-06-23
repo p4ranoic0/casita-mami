@@ -18,7 +18,7 @@ $csrf = csrfToken();
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Admin · <?=htmlspecialchars($album['title'])?></title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/admin/assets/admin.css">
+  <link rel="stylesheet" href="/admin/assets/admin.css?v=<?=@filemtime(__DIR__.'/assets/admin.css')?>">
 </head>
 <body
   data-csrf="<?=htmlspecialchars($csrf)?>"
@@ -122,7 +122,7 @@ $csrf = csrfToken();
   </main>
 
   <script src="/admin/assets/sortable.min.js"></script>
-  <script src="/admin/assets/admin.js"></script>
+  <script src="/admin/assets/admin.js?v=<?=@filemtime(__DIR__.'/assets/admin.js')?>"></script>
 
   <script>
     // Update enabled label on toggle change

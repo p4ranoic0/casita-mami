@@ -12,7 +12,7 @@ if (isLoggedIn()) { header('Location: /admin/'); exit; }
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Admin · La Casita de Mami</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/admin/assets/admin.css">
+  <link rel="stylesheet" href="/admin/assets/admin.css?v=<?=@filemtime(__DIR__.'/assets/admin.css')?>">
 </head>
 <body class="login">
   <form method="post" class="login-card">
