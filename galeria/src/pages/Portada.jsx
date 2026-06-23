@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Header from '../components/Header.jsx'
 import Footer from '../components/Footer.jsx'
@@ -9,6 +10,8 @@ import { containerStagger, titleReveal } from '../motion/variants.js'
 export default function Portada() {
   const { manifest, loading, error } = useManifest()
   const albums = manifest?.albums ?? []
+
+  useEffect(() => { document.title = 'Galería de fotos · La Casita de Mami | Nido en Surco' }, [])
 
   return (
     <div className="min-h-screen">

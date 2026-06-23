@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, Navigate, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Header from '../components/Header.jsx'
@@ -16,6 +16,16 @@ export default function Album() {
   const { slug } = useParams()
   const { manifest, loading, error } = useManifest()
   const [index, setIndex] = useState(null)
+
+  // SEO/UX: título + descripción por álbum
+  useEffect(() => {
+    const a = getAlbumBySlug(manifest, slug)
+    if (!a) return
+    document.title = `${a.title} · Galería · La Casita de Mami`
+    let m = document.querySelector('meta[name="description"]')
+    if (!m) { m = document.createElement('meta'); m.setAttribute('name', 'description'); document.head.appendChild(m) }
+    m.setAttribute('content', `${a.description ? a.description + ' ' : ''}Fotos de ${a.title} en La Casita de Mami, nido en Surco.`)
+  }, [manifest, slug])
 
   if (loading) {
     return (

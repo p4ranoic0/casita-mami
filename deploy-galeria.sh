@@ -29,6 +29,7 @@ rsync -avz --delete $DRY_RUN \
   --exclude='media/' \
   --exclude='manifest.json' \
   --exclude='albums.json' \
+  --exclude='sitemap.xml' \
   --exclude='.DS_Store' \
   dist-galeria/ "$REMOTE"
 

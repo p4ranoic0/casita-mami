@@ -37,4 +37,17 @@ function regenerateManifest(): void {
   }
   file_put_contents(MANIFEST_PATH, json_encode($out, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
   file_put_contents(GALERIA_DIR . '/albums.json', json_encode(['albums' => $index], JSON_UNESCAPED_UNICODE));
+
+  // sitemap.xml del subsitio /galeria (solo álbumes activos; siempre al día)
+  $home = 'https://lacasitademami.edu.pe/galeria';
+  $today = gmdate('Y-m-d');
+  $sm  = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+  $sm .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+  $sm .= "  <url><loc>$home</loc><lastmod>$today</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>\n";
+  foreach ($albums as $a) {
+    $loc = $home . '/' . rawurlencode($a['slug']);
+    $sm .= "  <url><loc>$loc</loc><lastmod>$today</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>\n";
+  }
+  $sm .= '</urlset>' . "\n";
+  file_put_contents(GALERIA_DIR . '/sitemap.xml', $sm);
 }
