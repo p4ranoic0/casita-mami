@@ -81,7 +81,7 @@ export default function Servicios() {
             className="pointer-events-none absolute right-0 top-0 h-full w-2/5"
             style={{
               background:
-                'linear-gradient(135deg, rgba(244,168,201,0.20), rgba(255,228,138,0.20), rgba(182,216,238,0.20))',
+                'linear-gradient(135deg, rgba(37,193,233,0.20), rgba(232,255,82,0.20), rgba(125,207,235,0.20))',
               clipPath: 'polygon(20% 0, 100% 0, 100% 100%, 0 100%)',
             }}
           />

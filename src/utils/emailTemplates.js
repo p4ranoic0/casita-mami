@@ -30,7 +30,7 @@ export function generateConfirmationEmail(formData) {
               box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             }
             .header {
-              background: linear-gradient(135deg, #2dd4bf 0%, #14b8a6 100%);
+              background: linear-gradient(135deg, #25c1e9 0%, #1a9dc0 100%);
               color: white;
               padding: 40px 20px;
               text-align: center;
@@ -121,12 +121,12 @@ export function generateConfirmationEmail(formData) {
               color: #6b7280;
             }
             .footer a {
-              color: #2dd4bf;
+              color: #25c1e9;
               text-decoration: none;
             }
             .button {
               display: inline-block;
-              background-color: #2dd4bf;
+              background-color: #25c1e9;
               color: white;
               padding: 12px 24px;
               border-radius: 8px;
@@ -241,7 +241,7 @@ export function generateAdminNotification(formData) {
               max-width: 600px;
               margin: 0 auto;
             }
-            h2 { color: #2dd4bf; }
+            h2 { color: #25c1e9; }
             table {
               width: 100%;
               border-collapse: collapse;

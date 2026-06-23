@@ -1,13 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 /**
- * La Casita de Mami — paleta "Multipastel"
- * Todos los colores derivan del logo real (franjas + wordmark + nube).
+ * La Casita de Mami — paleta "Turquesa + Verde"
  *
- *   Violeta wordmark   → primary        #8A4FBD
- *   Rosa franja        → accent-pink    #F4A8C9
- *   Amarillo franja    → accent-butter  #FFE48A
- *   Celeste franja     → accent-sky     #B6D8EE
- *   Crema (fondo nube) → background    #FFFCF7
+ *   Turquesa   → primary        #25c1e9
+ *   Verde      → accent-lime    #e8ff52
  */
 export default {
   content: [
@@ -18,36 +14,35 @@ export default {
   theme: {
     extend: {
       colors: {
-        // ─── Brand anchor (violeta del wordmark) ──────────────────────────
-        "primary":          "#8A4FBD",
-        "primary-dark":     "#6F3CA0",
-        "primary-soft":     "#F1E9FB",  // tinte 8% para chips, hovers, fondos suaves
-        "secondary":        "#6F3CA0",
+        // ─── Brand anchor (turquesa) ──────────────────────────────────────
+        "primary":          "#25c1e9",
+        "primary-dark":     "#1a9dc0",
+        "primary-soft":     "#e0f6fc",
+        "secondary":        "#1a9dc0",
 
-        // ─── Acentos (franjas del logo) ───────────────────────────────────
-        "accent-pink":      "#F4A8C9",
-        "accent-pink-soft": "#FCEBF2",
-        "accent-butter":    "#FFE48A",
-        "accent-butter-soft":"#FFF6D1",
-        "accent-sky":       "#B6D8EE",
-        "accent-sky-soft":  "#E8F2FA",
+        // ─── Acentos ─────────────────────────────────────────────────────
+        "accent-pink":      "#7ee8d0",
+        "accent-pink-soft": "#d9f7f0",
+        "accent-butter":    "#e8ff52",
+        "accent-butter-soft":"#f5ffb8",
+        "accent-sky":       "#7dcfeb",
+        "accent-sky-soft":  "#d6f0fa",
 
         // ─── Compatibilidad con tokens del repo actual ────────────────────
-        // (mantengo los nombres para no romper Header/Footer/etc.)
-        "accent-lime":      "#FFE48A",   // antes lima fluorescente → ahora butter
-        "accent-lime-dark": "#F6D34A",
-        "accent-coral":     "#F4A8C9",   // alias del rosa de marca
+        "accent-lime":      "#e8ff52",
+        "accent-lime-dark": "#c8e030",
+        "accent-coral":     "#7ee8d0",
 
         // ─── Superficies y fondos ─────────────────────────────────────────
-        "background-light": "#FFFCF7",   // crema cálida (era #f9f8f6 grisáceo)
-        "background-dark":  "#2A1F3A",   // violeta tinta para inversos
+        "background-light": "#f5fdff",
+        "background-dark":  "#0d2d3a",
         "surface-light":    "#FFFFFF",
 
         // ─── Texto ────────────────────────────────────────────────────────
-        "text-main":   "#2A1F3A",        // tinta violeta — armoniza con primary
-        "text-muted":  "#7A6E88",        // gris violáceo
-        "soft-gray":   "#7A6E88",
-        "charcoal":    "#2A1F3A",
+        "text-main":   "#0d2d3a",
+        "text-muted":  "#5a7a85",
+        "soft-gray":   "#5a7a85",
+        "charcoal":    "#0d2d3a",
       },
       fontFamily: {
         "display": ["Fraunces", "Plus Jakarta Sans", "serif"],
@@ -62,15 +57,13 @@ export default {
         "full":"9999px",
       },
       boxShadow: {
-        // Sombras teñidas con el violeta de marca (antes eran turquesa)
-        "soft":         "0 4px 20px -2px rgba(138, 79, 189, 0.15)",
-        "card":         "0 10px 15px -3px rgba(42, 31, 58, 0.05), 0 4px 6px -2px rgba(42, 31, 58, 0.025)",
-        "brand":        "0 20px 60px -30px rgba(138, 79, 189, 0.40)",
-        // Sombras directas bajo CTAs — copiadas del prototipo
-        "button":       "0 10px 28px -10px rgba(138, 79, 189, 0.55)",
-        "button-sm":    "0 6px 20px -6px rgba(138, 79, 189, 0.50)",
-        "card-hover":   "0 24px 50px -30px rgba(138, 79, 189, 0.45)",
-        "card-hover-sm":"0 14px 30px -16px rgba(138, 79, 189, 0.30)",
+        "soft":         "0 4px 20px -2px rgba(37, 193, 233, 0.15)",
+        "card":         "0 10px 15px -3px rgba(13, 45, 58, 0.05), 0 4px 6px -2px rgba(13, 45, 58, 0.025)",
+        "brand":        "0 20px 60px -30px rgba(37, 193, 233, 0.40)",
+        "button":       "0 10px 28px -10px rgba(37, 193, 233, 0.55)",
+        "button-sm":    "0 6px 20px -6px rgba(37, 193, 233, 0.50)",
+        "card-hover":   "0 24px 50px -30px rgba(37, 193, 233, 0.45)",
+        "card-hover-sm":"0 14px 30px -16px rgba(37, 193, 233, 0.30)",
       },
     },
   },

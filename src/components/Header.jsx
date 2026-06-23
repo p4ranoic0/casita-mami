@@ -79,6 +79,14 @@ export default function Header() {
               {link.label}
             </NavLink>
           ))}
+          {/* Galería: app aparte (/galeria) → enlace nativo, no NavLink */}
+          <a
+            href="/galeria/"
+            className="inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-semibold text-text-main transition hover:bg-primary-soft"
+          >
+            <span className="material-symbols-outlined text-[18px]">collections</span>
+            Galería
+          </a>
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
@@ -149,6 +157,14 @@ export default function Header() {
                   {link.label}
                 </NavLink>
               ))}
+              <a
+                href="/galeria/"
+                onClick={() => setMobileMenuOpen(false)}
+                className="inline-flex items-center gap-3 rounded-xl px-3 py-3 text-base font-semibold text-text-main transition"
+              >
+                <span className="material-symbols-outlined">collections</span>
+                Galería
+              </a>
               <Link
                 to="/contacto"
                 onClick={() => setMobileMenuOpen(false)}

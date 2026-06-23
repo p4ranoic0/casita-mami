@@ -1,26 +1,9 @@
 import { Link } from 'react-router-dom'
-import { useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
+import { useState, useEffect } from 'react'
 import SimpleModal from '../components/SimpleModal'
 import HeroQuickAnswers from '../components/HeroQuickAnswers'
-import { MOTION_DURATION, MOTION_EASE_STANDARD, withReducedMotion } from '../utils/motionTokens'
 import heroImage from '../assets/home/home-hero-aula-01.jpeg'
 import ambienteImage from '../assets/home/home-ambiente-aula-02.jpeg'
-import gallery01 from '../assets/home/home-galeria-01.jpeg'
-import gallery02 from '../assets/home/home-galeria-02.jpeg'
-import gallery03 from '../assets/home/home-galeria-03.jpeg'
-import gallery09 from '../assets/home/home-galeria-09.jpeg'
-import gallery10 from '../assets/home/home-galeria-10.jpeg'
-import gallery11 from '../assets/home/home-galeria-11.jpeg'
-import gallery12 from '../assets/home/home-galeria-12.jpeg'
-import gallery13 from '../assets/home/home-galeria-13.jpeg'
-import gallery14 from '../assets/home/home-galeria-14.jpeg'
-import gallery15 from '../assets/home/home-galeria-15.jpeg'
-import gallery16 from '../assets/home/home-galeria-16.jpeg'
-import gallery17 from '../assets/home/home-galeria-17.jpeg'
-import contact01 from '../assets/contact/contacto-galeria-01.jpeg'
-import contact02 from '../assets/contact/contacto-galeria-02.jpeg'
-import contact03 from '../assets/contact/contacto-galeria-03.jpeg'
 
 const TRUST_STATS = [
   { n: '12+', l: 'años acompañando' },
@@ -60,64 +43,15 @@ const quickNavStyles = {
 
 export default function Home() {
   const [openModal, setOpenModal] = useState(null)
-  const [currentSlide, setCurrentSlide] = useState(0)
-  const [lightboxOpen, setLightboxOpen] = useState(false)
-  const filmstripRef = useRef(null)
-  const prefersReducedMotion = useReducedMotion()
+  const [albums, setAlbums] = useState([])
 
-  const galleryImages = [
-    { src: gallery01, alt: 'Ambiente educativo 1' },
-    { src: gallery02, alt: 'Ambiente educativo 2' },
-    { src: gallery03, alt: 'Ambiente educativo 3' },
-    { src: contact01, alt: 'Espacio educativo y zona de actividades' },
-    { src: contact02, alt: 'Recepción y bienvenida para familias' },
-    { src: contact03, alt: 'Aula de aprendizaje para inicial' },
-    { src: gallery09, alt: 'Niños en actividad musical en el aula' },
-    { src: gallery10, alt: 'Niños participando en clase con instrumentos' },
-    { src: gallery11, alt: 'Niños jugando y bailando en el ambiente' },
-    { src: gallery12, alt: 'Niños cantando y levantando las manos' },
-    { src: gallery13, alt: 'Niños jugando con agua en el patio' },
-    { src: gallery14, alt: 'Celebración de cumpleaños en el aula' },
-    { src: gallery15, alt: 'Niño disfrutando la hora de la lonchera' },
-    { src: gallery16, alt: 'Maestra sirviendo el refrigerio a los niños' },
-    { src: gallery17, alt: 'Hora de la merienda con las maestras' },
-  ]
-
-  const goToNextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % galleryImages.length)
-  }
-
-  const goToPrevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + galleryImages.length) % galleryImages.length)
-  }
-
-  const handleSwipe = (offsetX) => {
-    if (offsetX <= -60) goToNextSlide()
-    else if (offsetX >= 60) goToPrevSlide()
-  }
-
-  // Bloquea el scroll del body y habilita navegación por teclado con el lightbox abierto
+  // Álbumes ACTIVOS de la galería (/galeria/albums.json) para mostrarlos aquí
   useEffect(() => {
-    if (!lightboxOpen) return
-    const prevOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    const onKey = (e) => {
-      if (e.key === 'Escape') setLightboxOpen(false)
-      else if (e.key === 'ArrowRight') goToNextSlide()
-      else if (e.key === 'ArrowLeft') goToPrevSlide()
-    }
-    window.addEventListener('keydown', onKey)
-    return () => {
-      document.body.style.overflow = prevOverflow
-      window.removeEventListener('keydown', onKey)
-    }
-  }, [lightboxOpen])
-
-  // Mantiene la miniatura activa a la vista al cambiar de imagen
-  useEffect(() => {
-    const active = filmstripRef.current?.querySelector('[data-active="true"]')
-    if (active) active.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })
-  }, [currentSlide])
+    fetch('/galeria/albums.json', { cache: 'no-cache' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => setAlbums(Array.isArray(d?.albums) ? d.albums : []))
+      .catch(() => setAlbums([]))
+  }, [])
 
   return (
     <main className="mx-auto w-full max-w-[1240px] px-6 pb-16">
@@ -257,156 +191,76 @@ export default function Home() {
           <div
             className="absolute -inset-2 -z-10 rounded-[28px] opacity-35 blur-xl"
             style={{
-              background: 'linear-gradient(135deg, #F4A8C9 0%, #FFE48A 33%, #B6D8EE 66%, #8A4FBD 100%)',
+              background: 'linear-gradient(135deg, #25c1e9 0%, #e8ff52 33%, #7dcfeb 66%, #25c1e9 100%)',
             }}
           />
           <img src={ambienteImage} alt="Ambiente de aprendizaje y juego" className="h-[420px] w-full rounded-3xl object-cover" />
         </div>
       </section>
 
-      {/* GALLERY */}
-      <section className="py-10">
-        <div className="mb-5 flex items-end justify-between">
-          <h2 className="font-display text-2xl font-semibold tracking-tight text-text-main md:text-[32px]">
-            Galería real del espacio
-          </h2>
-          <Link to="/contacto" className="text-sm font-bold text-primary">Coordinar visita →</Link>
-        </div>
-        <div className="overflow-hidden rounded-3xl border border-primary/15 bg-white shadow-soft">
-          <div className="group relative aspect-[16/9] overflow-hidden bg-[#2A1F3A]">
-            <AnimatePresence initial={false} mode="wait">
-              <motion.img
-                key={galleryImages[currentSlide].src}
-                src={galleryImages[currentSlide].src}
-                alt={galleryImages[currentSlide].alt}
-                className="absolute inset-0 h-full w-full cursor-zoom-in select-none object-cover"
-                draggable={false}
-                drag="x"
-                dragConstraints={{ left: 0, right: 0 }}
-                dragElastic={0.15}
-                onDragEnd={(_, info) => handleSwipe(info.offset.x)}
-                onClick={() => setLightboxOpen(true)}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: MOTION_DURATION.quick, ease: MOTION_EASE_STANDARD }}
-              />
-            </AnimatePresence>
-            <div className="pointer-events-none absolute right-3 top-3 flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-semibold text-text-main opacity-0 shadow-soft transition-opacity duration-200 group-hover:opacity-100">
-              <span className="material-symbols-outlined text-[16px]">zoom_in</span>
-              Ampliar
-            </div>
-            <button
-              type="button"
-              onClick={goToPrevSlide}
-              className="absolute left-3 top-1/2 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-text-main shadow-md transition-opacity hover:bg-white sm:opacity-0 sm:group-hover:opacity-100"
-              aria-label="Imagen anterior"
-            >
-              <span className="material-symbols-outlined">chevron_left</span>
-            </button>
-            <button
-              type="button"
-              onClick={goToNextSlide}
-              className="absolute right-3 top-1/2 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-text-main shadow-md transition-opacity hover:bg-white sm:opacity-0 sm:group-hover:opacity-100"
-              aria-label="Imagen siguiente"
-            >
-              <span className="material-symbols-outlined">chevron_right</span>
-            </button>
-            <div className="absolute bottom-3 right-3 rounded-full bg-[#2A1F3A]/80 px-3 py-1 text-xs font-semibold text-white">
-              {currentSlide + 1} / {galleryImages.length}
-            </div>
+      {/* GALERÍA — eje del sitio */}
+      <section className="py-12 md:py-16">
+        <div className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <span className="text-sm font-bold uppercase tracking-[0.08em] text-primary">Galería</span>
+            <h2 className="mt-1 font-display text-3xl font-bold tracking-tight text-text-main md:text-[40px]">
+              Revive cada momento
+            </h2>
+            <p className="mt-2 max-w-xl text-text-muted">
+              Recorre nuestros ambientes y los eventos de La Casita: celebraciones, aprendizaje y mucho juego.
+            </p>
           </div>
-          <div ref={filmstripRef} className="flex gap-2 overflow-x-auto p-3 [scrollbar-width:thin]">
-            {galleryImages.map((image, index) => (
-              <button
-                key={image.src}
-                type="button"
-                data-active={index === currentSlide}
-                onClick={() => setCurrentSlide(index)}
-                className={`h-14 w-20 shrink-0 overflow-hidden rounded-xl outline transition md:h-16 md:w-24 ${
-                  index === currentSlide ? 'outline-[3px] outline-primary' : 'outline-2 outline-transparent hover:outline-primary/40'
-                }`}
-                aria-label={`Ver imagen ${index + 1}`}
-                aria-current={index === currentSlide}
-              >
-                <img
-                  src={image.src}
-                  alt={image.alt}
-                  loading="lazy"
-                  decoding="async"
-                  className="h-full w-full object-cover"
-                  style={{ opacity: index === currentSlide ? 1 : 0.65 }}
-                />
-              </button>
-            ))}
-          </div>
+          <a
+            href="/galeria/"
+            className="inline-flex shrink-0 items-center gap-1.5 self-start rounded-xl bg-primary px-5 py-3 text-sm font-bold text-white shadow-button-sm transition hover:bg-primary-dark sm:self-auto"
+          >
+            Ver galería completa
+            <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+          </a>
         </div>
 
-        <AnimatePresence>
-          {lightboxOpen && (
-            <motion.div
-              className="fixed inset-0 z-[60] flex items-center justify-center bg-[#2A1F3A]/95 p-4 sm:p-8"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: MOTION_DURATION.quick, ease: MOTION_EASE_STANDARD }}
-              onClick={() => setLightboxOpen(false)}
-              role="dialog"
-              aria-modal="true"
-              aria-label="Galería ampliada"
-            >
-              <button
-                type="button"
-                onClick={() => setLightboxOpen(false)}
-                className="absolute right-4 top-4 flex size-11 items-center justify-center rounded-full bg-white/95 text-text-main shadow-md hover:bg-white"
-                aria-label="Cerrar galería"
+        {albums.length > 0 ? (
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+            {albums.map((album) => (
+              <a
+                key={album.slug}
+                href={`/galeria/${album.slug}`}
+                className="group relative block overflow-hidden rounded-3xl shadow-card transition-shadow duration-300 hover:shadow-card-hover"
               >
-                <span className="material-symbols-outlined">close</span>
-              </button>
-              <button
-                type="button"
-                onClick={(e) => { e.stopPropagation(); goToPrevSlide() }}
-                className="absolute left-3 top-1/2 flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-text-main shadow-md hover:bg-white sm:left-6"
-                aria-label="Imagen anterior"
-              >
-                <span className="material-symbols-outlined">chevron_left</span>
-              </button>
-              <button
-                type="button"
-                onClick={(e) => { e.stopPropagation(); goToNextSlide() }}
-                className="absolute right-3 top-1/2 flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-text-main shadow-md hover:bg-white sm:right-6"
-                aria-label="Imagen siguiente"
-              >
-                <span className="material-symbols-outlined">chevron_right</span>
-              </button>
-              <motion.img
-                key={galleryImages[currentSlide].src}
-                src={galleryImages[currentSlide].src}
-                alt={galleryImages[currentSlide].alt}
-                className="max-h-[85vh] max-w-[92vw] select-none rounded-2xl object-contain shadow-2xl"
-                draggable={false}
-                drag="x"
-                dragConstraints={{ left: 0, right: 0 }}
-                dragElastic={0.15}
-                onDragEnd={(_, info) => handleSwipe(info.offset.x)}
-                onClick={(e) => e.stopPropagation()}
-                initial={{ opacity: 0, scale: prefersReducedMotion ? 1 : 0.96 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: MOTION_DURATION.base, ease: MOTION_EASE_STANDARD }}
-              />
-              <div className="absolute bottom-5 left-1/2 -translate-x-1/2 rounded-full bg-white/90 px-4 py-1.5 text-sm font-semibold text-text-main">
-                {currentSlide + 1} / {galleryImages.length}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                <div className="aspect-[4/3] overflow-hidden bg-primary/10">
+                  <img
+                    src={`/galeria/${album.cover}`}
+                    alt={album.title}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0d2d3a]/80 via-[#0d2d3a]/15 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 p-4 md:p-5">
+                  <h3 className="font-display text-lg font-semibold leading-tight text-white md:text-xl">{album.title}</h3>
+                  <p className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-white/85">
+                    <span className="material-symbols-outlined text-[15px]">photo_library</span>
+                    {album.count} fotos
+                  </p>
+                </div>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <a
+            href="/galeria/"
+            className="flex items-center justify-center rounded-3xl border border-dashed border-primary/30 bg-primary/5 px-4 py-14 text-center font-semibold text-primary transition hover:bg-primary/10"
+          >
+            Ver nuestra galería de fotos →
+          </a>
+        )}
       </section>
 
       {/* CTA BAND */}
       <section className="py-8">
         <div
           className="relative grid items-center gap-8 overflow-hidden rounded-[28px] p-10 md:grid-cols-[1.5fr_1fr] md:p-12"
-          style={{ background: 'linear-gradient(110deg, #8A4FBD 0%, #6F3CA0 100%)' }}
+          style={{ background: 'linear-gradient(110deg, #25c1e9 0%, #1a9dc0 100%)' }}
         >
           <div className="pointer-events-none absolute -right-16 -top-16 size-60 rounded-full bg-accent-butter opacity-20" />
           <div className="pointer-events-none absolute -bottom-10 right-20 size-40 rounded-full bg-accent-pink opacity-25" />

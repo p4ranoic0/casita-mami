@@ -83,6 +83,9 @@ export default function Footer() {
                   <Link to={l.to} className="transition hover:text-primary">{l.label}</Link>
                 </li>
               ))}
+              <li>
+                <a href="/galeria/" className="transition hover:text-primary">Galería</a>
+              </li>
             </ul>
           </div>
 
