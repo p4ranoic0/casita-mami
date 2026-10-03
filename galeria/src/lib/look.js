@@ -1,0 +1,19 @@
+import { asset } from './paths.js'
+import { r } from '../../../src/data/casita.js'
+
+// Colores de cartulina que rotan entre álbumes (rosa, celeste, amarillo, lila).
+export const ALBUM_COLORS = ['var(--pk)', 'var(--sk)', 'var(--bu)', 'var(--li)']
+export const albumColor = (i) => ALBUM_COLORS[((i % 4) + 4) % 4]
+
+// Álbum sin fotos: el manifest puede traer una portada que no existe, así que
+// usamos una foto de los espacios del nido.
+const FALLBACK = ['espacio-01', 'espacio-03', 'espacio-05', 'aula-02', 'espacio-02', 'aula-05'].map(r)
+export function albumCover(album, i) {
+  if (album.cover && album.photos?.length) return asset(album.cover)
+  return FALLBACK[((i % FALLBACK.length) + FALLBACK.length) % FALLBACK.length]
+}
+
+export const countLabel = (n) => (n === 0 ? 'pronto' : n === 1 ? '1 foto' : `${n} fotos`)
+
+// Proporción ancho/alto. Fotos antiguas pueden venir con w/h = 0.
+export const ratio = (p) => (p.w > 0 && p.h > 0 ? p.w / p.h : 1.5)

@@ -11,12 +11,13 @@ if (isLoggedIn()) { header('Location: /admin/'); exit; }
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Admin · La Casita de Mami</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Fredoka:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/admin/assets/admin.css?v=<?=@filemtime(__DIR__.'/assets/admin.css')?>">
 </head>
 <body class="login">
   <form method="post" class="login-card">
-    <p class="login-brand">La Casita <span>·</span> Admin</p>
+    <p class="login-brand">La Casita <span>· Galería</span></p>
     <?php if ($err): ?>
       <p class="err"><?=htmlspecialchars($err)?></p>
     <?php endif; ?>
