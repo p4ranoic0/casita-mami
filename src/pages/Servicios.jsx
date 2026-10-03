@@ -28,7 +28,7 @@ export default function Servicios() {
         ))}
       </div>
       <section id="db-panel" role="tabpanel" aria-labelledby={'tab-' + s.id} className="db-panel" style={{ background: s.color }} key={s.id}>
-        <Sticker src={s.img} cap={s.cap} loading="eager" />
+        <Sticker src={s.img} cap={s.cap} priority sizes="(max-width: 900px) 100vw, 45vw" />
         <div>
           <h2>{s.n}</h2>
           <p className="intro">{s.intro}</p>

@@ -1,5 +1,7 @@
+import Picture from './Picture'
+
 // Foto tipo sticker: marco blanco, esquinas de cartulina y etiqueta manuscrita.
-export default function Sticker({ src, cap, alt, rot = 0, className = '', style, ratio, corners = true, loading = 'lazy' }) {
+export default function Sticker({ src, cap, alt, rot = 0, className = '', style, ratio, corners = true, loading = 'lazy', priority = false, sizes, width, height, srcSet }) {
   return (
     <figure className={'stk ' + className} style={{ transform: rot ? `rotate(${rot}deg)` : undefined, ...style }}>
       {corners && (
@@ -9,7 +11,7 @@ export default function Sticker({ src, cap, alt, rot = 0, className = '', style,
         </>
       )}
       <div className="ph" style={{ aspectRatio: ratio }}>
-        <img src={src} alt={alt ?? cap ?? ''} loading={loading} decoding="async" />
+        <Picture src={src} alt={alt ?? cap ?? ''} loading={loading} priority={priority} sizes={sizes} width={width} height={height} srcSet={srcSet} />
       </div>
       {cap && <figcaption>{cap}</figcaption>}
     </figure>

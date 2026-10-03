@@ -8,16 +8,22 @@ export const SEO = {
     title: 'La Casita de Mami · Nido y guardería en Surco',
     description: 'Nido y guardería en Santiago de Surco, desde los 3 meses hasta los 5 años. Grupos pequeños, mucho juego y un equipo que conoce a cada niño por su nombre.',
     canonical: `${origin}/`,
+    lcpImage: CM.aulas[0],
+    lcpSizes: '(max-width: 900px) 100vw, 48vw',
   },
   '/servicios': {
     title: 'Nido y guardería en Surco: horarios y precios | La Casita de Mami',
     description: `${service('nido').n} de ${service('nido').edad}, ${service('guarderia').n.toLowerCase()} ${service('guarderia').edad} y ${service('tarde').n.toLowerCase()} en Santiago de Surco. Conoce horarios, servicios y precios de La Casita de Mami.`,
     canonical: `${origin}/servicios`,
+    lcpImage: service('nido').img,
+    lcpSizes: '(max-width: 900px) 100vw, 45vw',
   },
   '/contacto': {
     title: 'Contacto y ubicación · Nido en Calle Morropón, Surco | La Casita de Mami',
     description: `Visítanos en ${CM.dir}, ${CM.distrito}. ${CM.horario}. Escríbenos por WhatsApp al ${CM.tel} y agenda una visita a La Casita de Mami.`,
     canonical: `${origin}/contacto`,
+    lcpImage: CM.puerta,
+    lcpSizes: '(max-width: 900px) 100vw, 48vw',
   },
 }
 

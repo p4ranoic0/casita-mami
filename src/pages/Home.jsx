@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import Sticker from '../components/Sticker'
 import { CM, SERVICIOS, wa } from '../data/casita'
+import Picture from '../components/Picture'
 
 const TL_COLORS = ['var(--pk)', 'var(--bu)', 'var(--sk)', 'var(--li)']
 const MISS_ROT = [-2, 1.5, -1, 2, -1.5, 1, -2.5]
@@ -19,7 +20,7 @@ export default function Home() {
           </div>
         </div>
         <div className="img">
-          <img src={CM.aulas[0]} alt="Niños trabajando en el aula" />
+          <Picture src={CM.aulas[0]} alt="Niños trabajando en el aula" priority sizes="(max-width: 900px) 100vw, 48vw" />
           <span className="label tag">así empieza la mañana</span>
         </div>
       </section>
@@ -95,7 +96,7 @@ export default function Home() {
               <div className="db-misses" style={{ '--n': t.m.length }}>
                 {t.m.map((s, i) => (
                   <figure key={s} className="db-miss" style={{ transform: `rotate(${MISS_ROT[i % 7]}deg)` }}>
-                    <img src={s} alt="Miss de La Casita" loading="lazy" />
+                    <Picture src={s} alt="Miss de La Casita" sizes="160px" />
                   </figure>
                 ))}
               </div>

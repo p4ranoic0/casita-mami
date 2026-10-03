@@ -3,6 +3,10 @@
    Lo comparten el sitio (src/) y la galería (galeria/src/). Todo cuelga de .db */
 .db{--bg:#FBF5EA;--ink:#2F2240;--ink2:#5E5070;--vi:#8A4FBD;--vid:#5E2F8A;--pk:#F4A8C9;--bu:#FFE48A;--sk:#B6D8EE;--li:#DCC8EE;font-family:'Nunito',sans-serif;color:var(--ink);background:var(--bg);min-height:100vh;font-size:17px;line-height:1.55;overflow-x:clip}
 .db *{box-sizing:border-box}
+/* <picture> (srcset AVIF/WebP) no debe alterar el layout: el <img> sigue siendo el hijo efectivo */
+.db picture{display:contents}
+/* width/height en <img> evitan CLS; sin esto el height del atributo pisa a aspect-ratio */
+.db img{height:auto}
 .db a{color:var(--vid);text-decoration:none}.db a:hover{color:var(--vi)}
 .db h1,.db h2,.db h3{font-family:'Fredoka',sans-serif;font-weight:600;letter-spacing:-.01em;margin:0;line-height:1.02;text-wrap:balance}
 .db h1{font-size:clamp(42px,6vw,76px)}
@@ -14,7 +18,7 @@
 .db .btn:hover{color:#fff;background:var(--vid);transform:rotate(-1.5deg) scale(1.03)}
 .db .btn.light{background:#fff;color:var(--ink)}.db .btn.light:hover{color:var(--ink);background:#fff}
 .db .btn.bu{background:var(--bu);color:var(--ink)}.db .btn.bu:hover{color:var(--ink);background:#FFD95A}
-.db .btn.wa{background:#2E9E5B}.db .btn.wa:hover{background:#25834B}
+.db .btn.wa{background:#23844A}.db .btn.wa:hover{background:#1C6E3D}
 .db .row{display:flex;flex-wrap:wrap;gap:12px}
 .db .label{display:inline-block;font-family:'Gochi Hand',cursive;font-size:24px;line-height:1;padding:8px 16px 6px;background:#fff;color:var(--ink);transform:rotate(-2deg);box-shadow:0 3px 0 rgba(47,34,64,.12)}
 /* scallops */
@@ -90,7 +94,7 @@
 /* footer */
 .db-foot{background:var(--ink);color:#E9E1F2;padding:56px 0 30px}
 .db-foot .cols{display:grid;grid-template-columns:minmax(0,1.6fr) repeat(3,minmax(0,1fr));gap:32px}
-.db-foot h4{margin:0 0 12px;font-family:'Gochi Hand',cursive;font-weight:400;font-size:22px;color:var(--bu)}
+.db-foot .db-foot-title{margin:0 0 12px;font-family:'Gochi Hand',cursive;font-weight:400;font-size:22px;color:var(--bu)}
 .db-foot ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:15px}
 .db-foot a{color:#fff;font-weight:700}.db-foot a:hover{color:var(--pk)}
 .db-foot .db-brand b{color:#fff}.db-foot .db-brand div>span{color:#CFC3DD}
@@ -101,7 +105,7 @@
 .db-ph p{font-size:19px;color:var(--ink2)}
 @media(max-width:800px){.db-ph{grid-template-columns:1fr}}
 .db-tabs{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-top:8px}.db-tabs::-webkit-scrollbar{display:none}
-.db-tabs button{flex:none;white-space:nowrap;font-family:'Fredoka',sans-serif;font-weight:600;font-size:20px;padding:14px 22px 12px;border:0;border-radius:22px 22px 0 0;cursor:pointer;color:var(--ink);opacity:.55;transition:opacity .15s,transform .15s;transform:translateY(6px)}
+.db-tabs button{flex:none;white-space:nowrap;font-family:'Fredoka',sans-serif;font-weight:600;font-size:20px;padding:14px 22px 12px;border:0;border-radius:22px 22px 0 0;cursor:pointer;color:var(--ink);opacity:.85;transition:opacity .15s,transform .15s;transform:translateY(6px)}
 .db-tabs button.on{opacity:1;transform:none}
 .db-panel{border-radius:0 26px 26px 26px;padding:48px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:start}
 .db-panel .stk{transform:rotate(-2deg)}
@@ -176,11 +180,11 @@
 .gb-card .stk{transform:rotate(-1.2deg)}
 
 .gb-meta{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
-.gb-meta h3{font-size:28px}.gb-card.big .gb-meta h3{font-size:44px}
+.gb-meta h2{font-size:28px}.gb-card.big .gb-meta h2{font-size:44px}
 .gb-meta>span{font-family:'Gochi Hand',cursive;font-size:20px;white-space:nowrap}
 .gb-card>p{font-size:18px;color:var(--ink2)}
 @media(max-width:900px){.gb-grid{grid-template-columns:1fr 1fr}.gb-card.big{grid-column:span 2}}
-@media(max-width:560px){.gb-grid{grid-template-columns:1fr}.gb-card.big{grid-column:auto}.gb-card.big .gb-meta h3{font-size:32px}}
+@media(max-width:560px){.gb-grid{grid-template-columns:1fr}.gb-card.big{grid-column:auto}.gb-card.big .gb-meta h2{font-size:32px}}
 .gb-band{padding:40px 0 56px}
 .gb-back{font-family:'Fredoka',sans-serif;font-weight:600;color:var(--ink)!important;background:#fff;padding:8px 16px;border-radius:999px;display:inline-block}
 .gb-bh{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-top:28px}

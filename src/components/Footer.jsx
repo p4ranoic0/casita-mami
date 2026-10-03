@@ -13,11 +13,11 @@ export default function Footer({ routes }) {
             </p>
           </div>
           <div>
-            <h4>páginas</h4>
+            <p className="db-foot-title">páginas</p>
             <ul>{PAGES.map((p) => <li key={p.id}><PageLink id={p.id} routes={routes}>{p.l}</PageLink></li>)}</ul>
           </div>
           <div>
-            <h4>dónde</h4>
+            <p className="db-foot-title">dónde</p>
             <ul>
               <li>{CM.dir}</li>
               <li>{CM.distrito}</li>
@@ -26,7 +26,7 @@ export default function Footer({ routes }) {
             </ul>
           </div>
           <div>
-            <h4>síguenos</h4>
+            <p className="db-foot-title">síguenos</p>
             <ul>
               {CM.redes.map((x) => <li key={x.l}><a href={x.h} target="_blank" rel="noopener noreferrer">{x.l}</a></li>)}
               <li><a href={wa()} target="_blank" rel="noopener noreferrer">WhatsApp</a></li>

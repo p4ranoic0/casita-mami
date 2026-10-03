@@ -1,5 +1,6 @@
 /* Sitio principal: dirección Cartulina. Los estilos viven en styles/cartulina.css
    (compartido con la galería). Sin Tailwind en las páginas nuevas. */
+@import './styles/fonts.css';
 @import './styles/cartulina.css';
 
 html, body { margin: 0; padding: 0; background: #FBF5EA; overflow-x: clip; }

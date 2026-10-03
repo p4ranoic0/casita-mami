@@ -1,8 +1,9 @@
 import { readFile, mkdir, writeFile } from 'node:fs/promises'
 import { pathToFileURL } from 'node:url'
 import { resolve } from 'node:path'
+import { execFileSync } from 'node:child_process'
 
-const { render, SEO, socialImage, localBusinessData } = await import(pathToFileURL(resolve('dist-ssr/entry-server.js')).href)
+const { render, SEO, socialImage, localBusinessData, pictureSrcSet, criticalFonts } = await import(pathToFileURL(resolve('dist-ssr/entry-server.js')).href)
 const template = await readFile('dist/index.html', 'utf8')
 
 function escapeHtml(value) {
@@ -17,6 +18,8 @@ function meta(attribute, name, content) {
 
 for (const [pathname, seo] of Object.entries(SEO)) {
   const tags = [
+    `<link rel="preload" as="image" type="image/avif" imagesrcset="${escapeHtml(pictureSrcSet(seo.lcpImage, 'avif'))}" imagesizes="${escapeHtml(seo.lcpSizes)}" fetchpriority="high" />`,
+    ...criticalFonts.map((url) => `<link rel="preload" as="font" type="font/woff2" href="${escapeHtml(url)}" crossorigin="anonymous" />`),
     '<meta name="robots" content="index, follow" />',
     `<link rel="canonical" href="${escapeHtml(seo.canonical)}" />`,
     ...Object.entries({
@@ -53,3 +56,22 @@ for (const [pathname, seo] of Object.entries(SEO)) {
   await writeFile(destination, html)
   console.log(`Prerender: ${pathname} → ${destination}`)
 }
+
+function lastModified(file) {
+  try {
+    return execFileSync('git', ['log', '-1', '--format=%cs', '--', file], { encoding: 'utf8' }).trim() || new Date().toISOString().slice(0, 10)
+  } catch {
+    return new Date().toISOString().slice(0, 10)
+  }
+}
+
+const sitemapRoutes = [
+  [SEO['/'].canonical, 'src/pages/Home.jsx'],
+  [SEO['/servicios'].canonical, 'src/pages/Servicios.jsx'],
+  [SEO['/contacto'].canonical, 'src/pages/Contacto.jsx'],
+  ['https://lacasitademami.edu.pe/galeria/', 'galeria/src/pages/Portada.jsx'],
+]
+const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapRoutes
+  .map(([url, file]) => `  <url><loc>${escapeHtml(url)}</loc><lastmod>${lastModified(file)}</lastmod></url>`)
+  .join('\n')}\n</urlset>\n`
+await writeFile('dist/sitemap.xml', sitemap)

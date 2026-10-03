@@ -10,6 +10,10 @@ function run(args) {
   if (result.status !== 0) throw new Error(`Vite terminó con código ${result.status}`)
 }
 
+const images = spawnSync(process.execPath, ['scripts/images.mjs'], { stdio: 'inherit' })
+if (images.error) throw images.error
+if (images.status !== 0) throw new Error(`Imágenes terminaron con código ${images.status}`)
+
 run(['build', ...baseArgs])
 try {
   run(['build', '--ssr', 'src/entry-server.jsx', '--outDir', 'dist-ssr', ...baseArgs])

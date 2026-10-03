@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { CM, PAGES } from '../data/casita'
+import Picture from './Picture'
 
 export function PageLink({ id, routes, className, onClick, children }) {
   const p = PAGES.find((x) => x.id === id)
@@ -11,7 +12,7 @@ export function PageLink({ id, routes, className, onClick, children }) {
 export function Brand() {
   return (
     <>
-      <span className="lg"><img src={CM.logo} alt="" /></span>
+      <span className="lg"><Picture src={CM.logo} alt="" aria-hidden="true" loading="eager" sizes="48px" /></span>
       <div><b>La Casita de Mami</b><span>nido y guardería · Surco</span></div>
     </>
   )

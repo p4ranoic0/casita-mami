@@ -1,6 +1,7 @@
 import Sticker from '../components/Sticker'
 import VisitForm from '../components/VisitForm'
 import { CM, wa } from '../data/casita'
+import Picture from '../components/Picture'
 
 export default function Contacto() {
   return (
@@ -15,7 +16,7 @@ export default function Contacto() {
           <VisitForm />
         </div>
         <div className="r">
-          <div className="stamp"><img src={CM.logo} alt="" /></div>
+          <div className="stamp"><Picture src={CM.logo} alt="" aria-hidden="true" sizes="160px" /></div>
           <div className="addr">
             <small>whatsapp · te respondemos el mismo día</small>
             <a href={wa('Hola, quisiera información.')} target="_blank" rel="noopener noreferrer">{CM.tel}</a>
@@ -27,7 +28,7 @@ export default function Contacto() {
         </div>
       </section>
       <section className="db-mapw">
-        <Sticker src={CM.puerta} cap="la puerta del arcoíris" rot={-3} ratio="4/3.4" />
+        <Sticker src={CM.puerta} alt="Fachada de La Casita de Mami en Calle Morropón 105, Surco" cap="la puerta del arcoíris" rot={-3} ratio="4/3.4" priority sizes="(max-width: 900px) 100vw, 48vw" />
         <div>
           <iframe title="Mapa de La Casita de Mami" src={CM.mapEmbed} loading="lazy" />
           <a href={CM.maps} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', marginTop: 14, fontWeight: 800 }}>Abrir en Google Maps →</a>

@@ -45,6 +45,8 @@ export default [
       // JSX transform nuevo (vite-plugin-react): no exigir React en scope.
       ...react.configs['jsx-runtime'].rules,
       ...reactHooks.configs.recommended.rules,
+      // React 18 requiere el atributo HTML en minúsculas para evitar avisos SSR.
+      'react/no-unknown-property': ['error', { ignore: ['fetchpriority'] }],
       // Proyecto JS sin PropTypes: evitamos ruido, no desactivamos reglas reales.
       'react/prop-types': 'off',
       'react-refresh/only-export-components': [
