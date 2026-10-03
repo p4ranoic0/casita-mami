@@ -21,15 +21,13 @@ echo "📦 Building con --base=/ ..."
 npm run build -- --base=/
 
 echo "🚀 Sincronizando a $REMOTE ..."
-# --delete limpia builds anteriores. Las exclusiones preservan archivos
-# que viven en el servidor pero no en el repo:
-#   .htaccess        → reglas de SPA routing
+# --delete limpia builds anteriores. .htaccess viene del build.
+# Las exclusiones preservan archivos que viven en el servidor pero no en el repo:
 #   sitemap.xml/robots.txt → SEO
 #   og-image.jpg, logo.webp → meta assets
 #   (los íconos del favicon ahora vienen del repo, en public/)
 #   fonts/           → fuentes self-hosted
 rsync -avz --delete $DRY_RUN \
-  --exclude='.htaccess' \
   --exclude='sitemap.xml' \
   --exclude='robots.txt' \
   --exclude='og-image.jpg' \
