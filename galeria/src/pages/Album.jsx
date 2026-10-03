@@ -1,103 +1,125 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useParams, Navigate, Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import Header from '../components/Header.jsx'
-import Footer from '../components/Footer.jsx'
-import PhotoGrid from '../components/PhotoGrid.jsx'
+import Sticker from '../../../src/components/Sticker.jsx'
+import JustifiedGrid, { SkeletonRow } from '../components/JustifiedGrid.jsx'
 import Lightbox from '../components/Lightbox.jsx'
-import Skeleton from '../components/Skeleton.jsx'
-import { DownloadAlbum } from '../components/DownloadButtons.jsx'
 import { useManifest } from '../lib/useManifest.js'
-import { getAlbumBySlug, photoCount, isAlbumEmpty } from '../lib/gallery.js'
-import { titleReveal } from '../motion/variants.js'
-import MoreAlbums from '../components/MoreAlbums.jsx'
+import { getAlbumBySlug, photoCount } from '../lib/gallery.js'
+import { albumZip } from '../lib/paths.js'
+import { albumColor, albumCover } from '../lib/look.js'
+
+// Fotos que se agregan a la vez. Al bajar se suman más (o con "Ver más fotos").
+const BATCH = 36
+const OTHER_ROT = [-2, 1.5, -1, 2]
 
 export default function Album() {
   const { slug } = useParams()
   const { manifest, loading, error } = useManifest()
-  const [index, setIndex] = useState(null)
+  const album = getAlbumBySlug(manifest, slug)
 
   // SEO/UX: título + descripción por álbum
   useEffect(() => {
-    const a = getAlbumBySlug(manifest, slug)
-    if (!a) return
-    document.title = `${a.title} · Galería · La Casita de Mami`
+    if (!album) return
+    document.title = `${album.title} · Galería · La Casita de Mami`
     let m = document.querySelector('meta[name="description"]')
     if (!m) { m = document.createElement('meta'); m.setAttribute('name', 'description'); document.head.appendChild(m) }
-    m.setAttribute('content', `${a.description ? a.description + ' ' : ''}Fotos de ${a.title} en La Casita de Mami, nido en Surco.`)
-  }, [manifest, slug])
+    m.setAttribute('content', `${album.description ? album.description + ' ' : ''}Fotos de ${album.title} en La Casita de Mami, nido en Surco.`)
+  }, [album])
 
   if (loading) {
     return (
-      <div className="min-h-screen"><Header />
-        <div className="mx-auto max-w-6xl px-5 py-12">
-          <Skeleton className="h-10 w-64" />
-          <div className="mt-8 grid grid-cols-2 md:grid-cols-3 gap-4">
-            {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="aspect-square" />)}
-          </div>
-        </div>
-      </div>
+      <main>
+        <section className="gb-band sc bot" style={{ '--c': 'var(--li)', background: 'var(--li)' }}>
+          <div className="wrap"><span className="gb-back">← Todos los álbumes</span><div className="gb-bh"><h1>&nbsp;</h1></div></div>
+        </section>
+        <div className="wrap gb-photos2"><SkeletonRow photos={Array.from({ length: 9 }, (_, i) => ({ w: i % 3 ? 3 : 2, h: 2 }))} /></div>
+      </main>
     )
   }
+  if (error || !album) return <Navigate to="/" replace />
+  // key: al pasar a otro álbum se reinicia el contador de carga y el lote
+  return <AlbumView key={album.slug} album={album} albums={manifest.albums} />
+}
 
-  if (error) return <Navigate to="/" replace />
-  const album = getAlbumBySlug(manifest, slug)
-  if (!album) return <Navigate to="/" replace />
-
+function AlbumView({ album, albums }) {
+  const [ix, setIx] = useState(null)
+  const [shown, setShown] = useState(BATCH)
+  const [loaded, setLoaded] = useState(0)
+  const sentinel = useRef(null)
   const photos = album.photos ?? []
-  const count = photoCount(album)
-  const empty = isAlbumEmpty(album)
+  const total = photoCount(album)
+  const ci = albums.indexOf(album)
+  const color = albumColor(ci)
+  const more = shown < total
+
+  useEffect(() => {
+    if (!more || !sentinel.current) return
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) setShown((s) => Math.min(total, s + BATCH))
+    }, { rootMargin: '600px' })
+    io.observe(sentinel.current)
+    return () => io.disconnect()
+  }, [more, total, shown])
+
+  const busy = loaded < Math.min(shown, total)
+  const pct = total ? Math.round((loaded / total) * 100) : 0
+  const others = albums.map((a, i) => ({ a, i })).filter(({ a }) => a.slug !== album.slug)
 
   return (
-    <div className="min-h-screen">
-      <Header />
-
-      {/* Cabecera del álbum */}
-      <section className="relative overflow-hidden border-b border-primary-soft">
-        <div className="absolute -top-16 right-0 h-64 w-64 rounded-full bg-accent-sky/30 blur-3xl" />
-        <div className="absolute -bottom-20 -left-10 h-64 w-64 rounded-full bg-accent-butter/30 blur-3xl" />
-        <div className="relative mx-auto max-w-6xl px-5 pt-12 pb-10">
-          <Link to="/" className="text-sm font-semibold text-primary-dark hover:text-primary">← Todos los álbumes</Link>
-          <motion.h1
-            initial="hidden" animate="show" variants={titleReveal}
-            className="mt-4 font-display text-4xl sm:text-5xl font-bold text-text-main"
-          >
-            {album.title}
-            <span className="mt-3 block h-1.5 w-16 rounded-full bg-gradient-to-r from-primary to-accent-butter" />
-          </motion.h1>
-          {album.description && (
-            <motion.p initial="hidden" animate="show" variants={titleReveal}
-              className="mt-4 max-w-2xl text-text-muted">{album.description}</motion.p>
-          )}
-          {!empty && (
-            <div className="mt-6"><DownloadAlbum slug={album.slug} count={count} /></div>
-          )}
+    <main>
+      <section className="gb-band sc bot" style={{ '--c': color, background: color }}>
+        <div className="wrap">
+          <Link to="/" className="gb-back">← Todos los álbumes</Link>
+          <div className="gb-bh">
+            <div><h1>{album.title}</h1>{album.description && <p>{album.description}</p>}</div>
+            {total > 0 && <a className="btn" href={albumZip(album.slug)}>{total === 1 ? 'Descargar la foto' : `Descargar las ${total} fotos`}</a>}
+          </div>
         </div>
       </section>
 
-      {/* Contenido */}
-      <section className="mx-auto max-w-6xl px-5 py-10">
-        {empty ? (
-          <div className="rounded-2xl bg-white p-12 text-center shadow-card">
-            <p className="font-display text-2xl text-text-main">Pronto subiremos las fotos de este evento</p>
-            <p className="mt-2 text-text-muted">Vuelve en unos días para revivirlo. 💙</p>
-          </div>
+      {total > 0 && (
+        <div className={'gb-load' + (busy ? '' : ' done')} role="status" aria-live="polite">
+          <span>{busy ? `Cargando fotos · ${loaded} de ${total}` : `${loaded} de ${total} fotos listas`}</span>
+          <b><i style={{ width: pct + '%' }} /></b>
+        </div>
+      )}
+
+      <div className="wrap">
+        {total ? (
+          <section className="gb-photos2">
+            <JustifiedGrid photos={photos.slice(0, shown)} onOpen={setIx} onLoaded={() => setLoaded((n) => n + 1)} />
+            {more && (
+              <div ref={sentinel} className="gb-more-wrap">
+                <SkeletonRow photos={photos.slice(shown, shown + 6)} />
+                <button className="btn light" onClick={() => setShown((s) => Math.min(total, s + BATCH))}>
+                  {`Ver más fotos (${total - shown} restantes)`}
+                </button>
+              </div>
+            )}
+          </section>
         ) : (
-          <PhotoGrid photos={photos} onOpen={setIndex} />
+          <section className="gb-empty">
+            <span className="label">pronto</span>
+            <h2>Estamos eligiendo las fotos</h2>
+            <p>Vuelve en unos días para revivir este evento.</p>
+          </section>
         )}
-      </section>
 
-      <Lightbox
-        photos={photos}
-        index={index}
-        onClose={() => setIndex(null)}
-        onPrev={() => setIndex((i) => (i - 1 + photos.length) % photos.length)}
-        onNext={() => setIndex((i) => (i + 1) % photos.length)}
-      />
+        {others.length > 0 && (
+          <section className="db-sec" style={{ paddingTop: 40 }}>
+            <h2>Otros álbumes</h2>
+            <div className="gb-more">
+              {others.map(({ a, i }, k) => (
+                <Link key={a.slug} to={'/' + a.slug} className="gb-mi">
+                  <Sticker src={albumCover(a, i)} cap={a.title} rot={OTHER_ROT[k % 4]} corners={false} ratio="1" />
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
 
-      <MoreAlbums albums={manifest?.albums ?? []} currentSlug={album.slug} />
-
-      <Footer />
-    </div>
+      <Lightbox photos={photos} index={ix} setIndex={setIx} title={album.title} />
+    </main>
   )
 }

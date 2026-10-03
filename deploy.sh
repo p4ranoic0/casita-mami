@@ -25,7 +25,8 @@ echo "🚀 Sincronizando a $REMOTE ..."
 # que viven en el servidor pero no en el repo:
 #   .htaccess        → reglas de SPA routing
 #   sitemap.xml/robots.txt → SEO
-#   og-image.jpg, logo.webp, apple-touch-icon.png, favicon-32.png → meta assets
+#   og-image.jpg, logo.webp → meta assets
+#   (los íconos del favicon ahora vienen del repo, en public/)
 #   fonts/           → fuentes self-hosted
 rsync -avz --delete $DRY_RUN \
   --exclude='.htaccess' \
@@ -33,8 +34,6 @@ rsync -avz --delete $DRY_RUN \
   --exclude='robots.txt' \
   --exclude='og-image.jpg' \
   --exclude='logo.webp' \
-  --exclude='favicon-32.png' \
-  --exclude='apple-touch-icon.png' \
   --exclude='fonts/' \
   --exclude='.DS_Store' \
   --exclude='galeria/' \

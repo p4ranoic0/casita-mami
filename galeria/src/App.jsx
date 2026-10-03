@@ -1,27 +1,27 @@
+import { useEffect } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
-import { AnimatePresence, motion } from 'framer-motion'
+import Header from '../../src/components/Header.jsx'
+import Footer from '../../src/components/Footer.jsx'
 import Portada from './pages/Portada.jsx'
 import Album from './pages/Album.jsx'
-import { pageFade } from './motion/variants.js'
 
-function Animated({ children }) {
-  return (
-    <motion.div variants={pageFade} initial="initial" animate="animate" exit="exit">
-      {children}
-    </motion.div>
-  )
-}
+// Dentro de /galeria/ el router solo maneja la galería; Inicio, Servicios y
+// Contacto son enlaces normales al sitio principal.
+const ROUTES = { galeria: '/' }
 
 function App() {
-  const location = useLocation()
+  const { pathname } = useLocation()
+  useEffect(() => { window.scrollTo(0, 0) }, [pathname])
   return (
-    <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<Animated><Portada /></Animated>} />
-        <Route path="/:slug" element={<Animated><Album /></Animated>} />
+    <div className="db">
+      <Header current="galeria" routes={ROUTES} />
+      <Routes>
+        <Route path="/" element={<Portada />} />
+        <Route path="/:slug" element={<Album />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-    </AnimatePresence>
+      <Footer routes={ROUTES} />
+    </div>
   )
 }
 

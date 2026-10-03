@@ -1,58 +1,54 @@
-import { useEffect, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { DownloadPhoto } from './DownloadButtons.jsx'
+import { useEffect, useState } from 'react'
 import { asset } from '../lib/paths.js'
+import { ratio } from '../lib/look.js'
 
-// Lightbox con navegación por teclado/flechas. index === null => cerrado.
-export default function Lightbox({ photos, index, onClose, onPrev, onNext }) {
-  const open = index !== null && index >= 0
-
-  const handleKey = useCallback((e) => {
-    if (!open) return
-    if (e.key === 'Escape') onClose()
-    if (e.key === 'ArrowLeft') onPrev()
-    if (e.key === 'ArrowRight') onNext()
-  }, [open, onClose, onPrev, onNext])
+// Foto en grande. Primero se ve la miniatura borrosa y encima aparece la
+// versión web cuando termina de cargar. Precarga la anterior y la siguiente.
+// index === null => cerrado.
+export default function Lightbox({ photos, index, setIndex, title }) {
+  const [loadedSrc, setLoadedSrc] = useState(null)
+  const n = photos.length
+  const open = index !== null && index >= 0 && index < n
 
   useEffect(() => {
-    window.addEventListener('keydown', handleKey)
-    return () => window.removeEventListener('keydown', handleKey)
-  }, [handleKey])
+    if (!open) return
+    ;[index + 1, index - 1].forEach((j) => {
+      const p = photos[(j + n) % n]
+      if (p) { const im = new Image(); im.src = asset(p.web) }
+    })
+    const k = (e) => {
+      if (e.key === 'Escape') setIndex(null)
+      if (e.key === 'ArrowLeft') setIndex((index - 1 + n) % n)
+      if (e.key === 'ArrowRight') setIndex((index + 1) % n)
+    }
+    window.addEventListener('keydown', k)
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => { window.removeEventListener('keydown', k); document.body.style.overflow = prev }
+  }, [open, index, n, photos, setIndex])
 
-  const photo = open ? photos[index] : null
+  if (!open) return null
+  const p = photos[index]
+  const web = asset(p.web)
+  const ok = loadedSrc === web
+  const step = (d) => (e) => { e.stopPropagation(); setIndex((index + d + n) % n) }
 
   return (
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-charcoal/90 backdrop-blur-sm p-4"
-          onClick={onClose}
-        >
-          <button onClick={onClose} aria-label="Cerrar"
-            className="absolute top-4 right-5 text-white/80 hover:text-white text-3xl">×</button>
-
-          <button onClick={(e) => { e.stopPropagation(); onPrev() }} aria-label="Anterior"
-            className="absolute left-3 sm:left-6 text-white/70 hover:text-white text-4xl select-none">‹</button>
-
-          <motion.div
-            key={photo.web}
-            initial={{ scale: 0.92, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: 'spring', stiffness: 200, damping: 24 }}
-            onClick={(e) => e.stopPropagation()}
-            className="flex max-h-[90vh] max-w-[92vw] flex-col items-center gap-4"
-          >
-            <img src={asset(photo.web)} alt="" className="max-h-[78vh] max-w-full rounded-lg object-contain shadow-brand" />
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-white/70">{index + 1} / {photos.length}</span>
-              <DownloadPhoto orig={photo.orig} filename={`la-casita-${index + 1}.jpeg`} />
-            </div>
-          </motion.div>
-
-          <button onClick={(e) => { e.stopPropagation(); onNext() }} aria-label="Siguiente"
-            className="absolute right-3 sm:right-6 text-white/70 hover:text-white text-4xl select-none">›</button>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <div className="lb" onClick={() => setIndex(null)} role="dialog" aria-modal="true" aria-label={title}>
+      <button className="lb-x" onClick={() => setIndex(null)}>Cerrar</button>
+      <button className="lb-nav l" aria-label="Anterior" onClick={step(-1)}>‹</button>
+      <figure className="lb-fig" onClick={(e) => e.stopPropagation()}>
+        <div className="lb-stage" style={{ aspectRatio: String(ratio(p)) }}>
+          <img className="lb-blur" src={asset(p.thumb)} alt="" />
+          <img key={web} className={'lb-full' + (ok ? ' ok' : '')} src={web} alt={title} onLoad={() => setLoadedSrc(web)} />
+          {!ok && <span className="lb-spin">cargando…</span>}
+        </div>
+        <figcaption>
+          <span>{title} · {index + 1} de {n}</span>
+          <a href={asset(p.orig || p.web)} download={`la-casita-${index + 1}.jpg`}>Descargar foto</a>
+        </figcaption>
+      </figure>
+      <button className="lb-nav r" aria-label="Siguiente" onClick={step(1)}>›</button>
+    </div>
   )
 }
