@@ -11,7 +11,7 @@ if (isLoggedIn()) { header('Location: /admin/'); exit; }
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Admin · La Casita de Mami</title>
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Fredoka:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/admin/assets/admin.css?v=<?=@filemtime(__DIR__.'/assets/admin.css')?>">
 </head>
