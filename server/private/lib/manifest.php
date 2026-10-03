@@ -51,7 +51,7 @@ function regenerateManifest(): void {
   $today = gmdate('Y-m-d');
   $sm  = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
   $sm .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
-  $sm .= "  <url><loc>$home</loc><lastmod>$today</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>\n";
+  $sm .= "  <url><loc>$home/</loc><lastmod>$today</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>\n";
   foreach ($albums as $a) {
     $loc = $home . '/' . rawurlencode($a['slug']);
     $sm .= "  <url><loc>$loc</loc><lastmod>$today</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>\n";

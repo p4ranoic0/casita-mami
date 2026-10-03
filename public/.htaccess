@@ -9,7 +9,8 @@ ErrorDocument 404 /404.html
 
   RewriteRule ^(servicios|contacto)/$ /$1 [R=301,L,NE]
   RewriteRule ^ubicacion/?$ /contacto [R=301,L,NE]
-  RewriteRule ^galeria$ /galeria/ [R=301,L,NE]
+  # DirectorySlash Off es global: devolver la barra a los directorios reales
+  RewriteRule ^(galeria|admin|api|docs)$ /$1/ [R=301,L,NE]
   RewriteRule ^(servicios|contacto)$ $1/index.html [L]
 </IfModule>
 
