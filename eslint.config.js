@@ -9,7 +9,7 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 // `src/**` y `galeria/src/**`, sin reglas de estilo agresivas.
 export default [
   // Artefactos de build y la copia del repo dentro de worktrees fuera del lint.
-  { ignores: ['dist/**', 'dist-galeria/**', '.claude/**'] },
+  { ignores: ['dist/**', 'dist-galeria/**', 'server/**', '.claude/**'] },
 
   // Reglas base recomendadas de ESLint para todo el JS/JSX del repo.
   js.configs.recommended,
@@ -54,9 +54,15 @@ export default [
     },
   },
 
+  // La entrada SSR exporta funciones de build, no componentes con Fast Refresh.
+  {
+    files: ['src/entry-server.jsx'],
+    rules: { 'react-refresh/only-export-components': 'off' },
+  },
+
   // Archivos de configuración y build: entorno Node (vite, vitest, postcss, tailwind…).
   {
-    files: ['**/*.config.js'],
+    files: ['**/*.config.js', 'scripts/**/*.mjs'],
     languageOptions: {
       globals: globals.node,
     },

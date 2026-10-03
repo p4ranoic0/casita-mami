@@ -12,6 +12,8 @@ export const wa = (text) =>
 
 export const CM = {
   logo,
+  logoPublico: '/logo.webp',
+  imagenSocial: '/og-image.jpg',
   puerta,
   tel: '908 880 326',
   telHref: 'tel:+51908880326',
@@ -22,6 +24,7 @@ export const CM = {
   mapEmbed: 'https://www.google.com/maps?q=Calle+Morropon+105,+Santiago+de+Surco,+Lima&output=embed',
   galeria: '/galeria/',
   horario: 'Lunes a viernes, 8:00 a.m. – 6:00 p.m.',
+  horarioDatos: { dias: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], abre: '08:00', cierra: '18:00' },
   sabado: 'Sábados con cita previa',
   redes: [
     { l: 'Instagram', h: 'https://www.instagram.com/lacasitademami_/' },

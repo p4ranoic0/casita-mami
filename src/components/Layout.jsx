@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import Header from './Header'
 import Footer from './Footer'
+import { SEO, updateSeoHead } from '../data/seo'
 
 // Páginas que maneja el router del sitio. Galería es la app aparte en /galeria/.
 const ROUTES = { inicio: '/', servicios: '/servicios', contacto: '/contacto' }
@@ -12,6 +13,7 @@ export default function Layout() {
   // Al cambiar de página, arriba. Si hay #ancla (p. ej. /servicios#tarde) la
   // página decide qué hacer con ella.
   useEffect(() => { if (!hash) window.scrollTo(0, 0) }, [pathname, hash])
+  useEffect(() => { if (SEO[pathname]) updateSeoHead(SEO[pathname]) }, [pathname])
   return (
     <div className="db">
       <Header current={CURRENT[pathname]} routes={ROUTES} />

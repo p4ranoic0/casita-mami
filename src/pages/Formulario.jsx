@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { MOTION_DURATION, MOTION_EASE_STANDARD } from '../utils/motionTokens'
