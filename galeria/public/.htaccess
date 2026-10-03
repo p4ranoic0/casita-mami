@@ -1,27 +1,27 @@
-# Cache de imágenes y assets
-<IfModule mod_expires.c>
-  ExpiresActive On
-  ExpiresByType image/jpeg "access plus 1 year"
-  ExpiresByType image/png "access plus 1 year"
-  ExpiresByType image/webp "access plus 1 year"
-  ExpiresByType text/css "access plus 1 month"
-  ExpiresByType application/javascript "access plus 1 month"
-</IfModule>
+ErrorDocument 404 /galeria/404.html
 
-# Compresión
-<IfModule mod_deflate.c>
-  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json
-</IfModule>
-
-# Routing SPA bajo /galeria. Este .htaccess vive en public_html/galeria/ y tiene su
-# propio RewriteEngine On, así que NO hereda las reglas del .htaccess del dominio
-# principal. Archivos/carpetas reales (incluye download-album.php y media/) se sirven
-# directo; el resto cae en /galeria/index.html para que /galeria/dia-del-padre funcione.
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /galeria/
+  RewriteRule ^$ index.html [L]
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule . /galeria/index.html [L]
+  RewriteRule ^([a-z0-9-]+)/?$ album.php?slug=$1 [L,QSA]
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  <FilesMatch "\.(?:jpe?g|png|webp|avif|gif|ico|svg|woff2?|ttf|otf)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "-[A-Za-z0-9_-]{8,}\.(?:js|css)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml application/xml text/xml
 </IfModule>
