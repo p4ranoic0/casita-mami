@@ -31,7 +31,8 @@ if ($action === 'create') {                       // nuevo álbum vacío
   if ($title === '') { http_response_code(400); exit(json_encode(['error'=>'title'])); }
   $slug = uniqueSlug($pdo, slugify($title));
   $pos = (int)$pdo->query('SELECT COALESCE(MAX(position),0)+1 p FROM albums')->fetch()['p'];
-  $pdo->prepare('INSERT INTO albums (slug,title,description,enabled,position) VALUES (?,?,?,1,?)')
+  // nace oculto: se publica cuando ya tiene fotos
+  $pdo->prepare('INSERT INTO albums (slug,title,description,enabled,position) VALUES (?,?,?,0,?)')
       ->execute([$slug, $title, '', $pos]);
   $id = (int)$pdo->lastInsertId();
   foreach (['orig','web','thumb'] as $k) @mkdir(MEDIA_DIR . "/$slug/$k", 0755, true);

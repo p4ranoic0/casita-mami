@@ -1,10 +1,9 @@
 # La Casita de Mami · Sitio simplificado
 
-Sitio web optimizado para una interacción simple con **3 páginas clave**:
-
-- Inicio
-- Servicios
-- Contacto
+Sitio web con dirección visual **Cartulina** (Fredoka + Nunito + Gochi Hand,
+paleta del logo). Páginas: Inicio, Servicios, Contacto y la Galería (app aparte
+en `/galeria/`). Los estilos compartidos están en `src/styles/cartulina.css` y
+los datos (contacto, servicios, fotos) en `src/data/casita.js`.
 
 ## Objetivo de esta versión
 
@@ -13,8 +12,10 @@ Reducir fricción y confusión en navegación, concentrando el contenido real di
 ## Arquitectura actual
 
 - `/` Inicio
-- `/servicios` Servicios
+- `/servicios` Servicios (pestaña enlazable: `/servicios#tarde`)
 - `/contacto` Contacto
+- `/galeria/` Galería (build aparte: `npm run build:galeria`)
+- `/admin/` Admin de la galería (PHP, `deploy-admin.sh`)
 
 Compatibilidad:
 - `/ubicacion` redirige a `/contacto`.
@@ -32,6 +33,7 @@ Compatibilidad:
 - `src/assets/home/*`
 - `src/assets/services/*`
 - `src/assets/contact/*`
+- `src/assets/real/*` (fotos de la presentación del nido: espacios, aulas, misses)
 - `public/docs/presentacion-la-casita-de-mami.pdf`
 
 Para el detalle de inventario y renombrado, ver `docs/assets-inventario.md`.

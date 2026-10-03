@@ -10,6 +10,14 @@ function photoPaths(string $slug, array $p): array {
   ];
 }
 
+// Escritura atómica: con subidas en paralelo dos procesos pueden regenerar a la
+// vez; así la galería nunca lee un JSON a medio escribir.
+function writeAtomic(string $path, string $data): void {
+  $tmp = $path . '.' . bin2hex(random_bytes(4)) . '.tmp';
+  file_put_contents($tmp, $data, LOCK_EX);
+  rename($tmp, $path);
+}
+
 function regenerateManifest(): void {
   $pdo = db();
   $albums = $pdo->query('SELECT * FROM albums WHERE enabled=1 ORDER BY position, id')->fetchAll();
@@ -35,8 +43,8 @@ function regenerateManifest(): void {
       'cover' => str_replace('/web/', '/thumb/', $cover),
     ];
   }
-  file_put_contents(MANIFEST_PATH, json_encode($out, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-  file_put_contents(GALERIA_DIR . '/albums.json', json_encode(['albums' => $index], JSON_UNESCAPED_UNICODE));
+  writeAtomic(MANIFEST_PATH, json_encode($out, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+  writeAtomic(GALERIA_DIR . '/albums.json', json_encode(['albums' => $index], JSON_UNESCAPED_UNICODE));
 
   // sitemap.xml del subsitio /galeria (solo álbumes activos; siempre al día)
   $home = 'https://lacasitademami.edu.pe/galeria';
@@ -49,5 +57,5 @@ function regenerateManifest(): void {
     $sm .= "  <url><loc>$loc</loc><lastmod>$today</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>\n";
   }
   $sm .= '</urlset>' . "\n";
-  file_put_contents(GALERIA_DIR . '/sitemap.xml', $sm);
+  writeAtomic(GALERIA_DIR . '/sitemap.xml', $sm);
 }
