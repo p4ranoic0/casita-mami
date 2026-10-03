@@ -16,6 +16,7 @@ export function albumDownloadUrl(base, slug) {
 }
 
 export function photoCount(album) {
+  if (typeof album?.count === 'number') return album.count
   return Array.isArray(album?.photos) ? album.photos.length : 0
 }
 

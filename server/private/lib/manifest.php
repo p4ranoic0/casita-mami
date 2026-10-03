@@ -50,11 +50,17 @@ function regenerateManifest(): void {
   $home = 'https://lacasitademami.edu.pe/galeria';
   $today = gmdate('Y-m-d');
   $sm  = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
-  $sm .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+  $sm .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' . "\n";
   $sm .= "  <url><loc>$home/</loc><lastmod>$today</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>\n";
-  foreach ($albums as $a) {
-    $loc = $home . '/' . rawurlencode($a['slug']);
-    $sm .= "  <url><loc>$loc</loc><lastmod>$today</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>\n";
+  foreach ($out['albums'] as $album) {
+    $loc = htmlspecialchars($home . '/' . rawurlencode($album['slug']), ENT_XML1 | ENT_QUOTES, 'UTF-8');
+    $sm .= "  <url><loc>$loc</loc><lastmod>$today</lastmod><changefreq>monthly</changefreq><priority>0.6</priority>\n";
+    foreach (array_slice($album['photos'], 0, 1000) as $photo) {
+      $imageUrl = $home . '/' . implode('/', array_map('rawurlencode', explode('/', $photo['web'])));
+      $imageUrl = htmlspecialchars($imageUrl, ENT_XML1 | ENT_QUOTES, 'UTF-8');
+      $sm .= "    <image:image><image:loc>$imageUrl</image:loc></image:image>\n";
+    }
+    $sm .= "  </url>\n";
   }
   $sm .= '</urlset>' . "\n";
   writeAtomic(GALERIA_DIR . '/sitemap.xml', $sm);

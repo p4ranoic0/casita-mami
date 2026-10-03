@@ -4,12 +4,13 @@ import { ratio } from '../lib/look.js'
 
 // Miniatura que no pide la imagen hasta que está cerca de la pantalla.
 // Mientras tanto (y mientras descarga) muestra el recuadro animado.
-function LazyImg({ src, alt, eager, onDone }) {
+function LazyImg({ src, alt, eager, priority, width, height, onDone }) {
   const ref = useRef(null)
   const [go, setGo] = useState(eager)
   const [ok, setOk] = useState(false)
   useEffect(() => {
     if (go) return
+    if (typeof IntersectionObserver === 'undefined') { setGo(true); return }
     const io = new IntersectionObserver(([e]) => {
       if (e.isIntersecting) { io.disconnect(); setGo(true) }
     }, { rootMargin: '400px' })
@@ -19,7 +20,9 @@ function LazyImg({ src, alt, eager, onDone }) {
   const done = () => { setOk(true); onDone?.() }
   return (
     <span ref={ref} className={'jg-img' + (ok ? ' ok' : '')}>
-      {go && <img src={src} alt={alt} decoding="async" onLoad={done} onError={done} />}
+      {go && <img src={src} alt={alt} width={width || undefined} height={height || undefined}
+        loading={eager ? 'eager' : 'lazy'} decoding="async" fetchpriority={priority ? 'high' : undefined}
+        onLoad={done} onError={done} />}
     </span>
   )
 }
@@ -31,13 +34,14 @@ const tileStyle = (p) => {
 
 // Cuadrícula justificada: las fotos van por filas, de izquierda a derecha,
 // y cada una conserva su proporción.
-export default function JustifiedGrid({ photos, onOpen, onLoaded }) {
+export default function JustifiedGrid({ photos, title, total, onOpen, onLoaded }) {
   return (
     <div className="jg">
       {photos.map((p, i) => (
         <button key={p.thumb} className="jg-t" style={tileStyle(p)} onClick={() => onOpen(i)} aria-label={`Abrir foto ${i + 1}`}>
           <i style={{ paddingBottom: (1 / ratio(p)) * 100 + '%' }} />
-          <LazyImg src={asset(p.thumb)} alt={`Foto ${i + 1}`} eager={i < 8} onDone={onLoaded} />
+          <LazyImg src={asset(p.thumb)} alt={`${title} – foto ${i + 1} de ${total}, La Casita de Mami (Surco)`}
+            eager={i < 8} priority={i === 0} width={p.w} height={p.h} onDone={onLoaded} />
         </button>
       ))}
     </div>

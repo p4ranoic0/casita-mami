@@ -1,4 +1,5 @@
 /* Galería: misma dirección Cartulina que el sitio principal. */
+@import '../../../src/styles/fonts.css';
 @import '../../../src/styles/cartulina.css';
 
 :root { color-scheme: light; }

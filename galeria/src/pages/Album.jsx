@@ -87,7 +87,7 @@ function AlbumView({ album, albums }) {
       <div className="wrap">
         {total ? (
           <section className="gb-photos2">
-            <JustifiedGrid photos={photos.slice(0, shown)} onOpen={setIx} onLoaded={() => setLoaded((n) => n + 1)} />
+            <JustifiedGrid photos={photos.slice(0, shown)} title={album.title} total={total} onOpen={setIx} onLoaded={() => setLoaded((n) => n + 1)} />
             {more && (
               <div ref={sentinel} className="gb-more-wrap">
                 <SkeletonRow photos={photos.slice(shown, shown + 6)} />

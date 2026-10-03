@@ -39,8 +39,11 @@ export default function Lightbox({ photos, index, setIndex, title }) {
       <button className="lb-nav l" aria-label="Anterior" onClick={step(-1)}>‹</button>
       <figure className="lb-fig" onClick={(e) => e.stopPropagation()}>
         <div className="lb-stage" style={{ aspectRatio: String(ratio(p)) }}>
-          <img className="lb-blur" src={asset(p.thumb)} alt="" />
-          <img key={web} className={'lb-full' + (ok ? ' ok' : '')} src={web} alt={title} onLoad={() => setLoadedSrc(web)} />
+          <img className="lb-blur" src={asset(p.thumb)} alt="" aria-hidden="true" width={p.w || undefined} height={p.h || undefined} decoding="async" />
+          <img key={web} className={'lb-full' + (ok ? ' ok' : '')} src={web}
+            alt={`${title} – foto ${index + 1} de ${n}, La Casita de Mami (Surco)`}
+            width={p.w || undefined} height={p.h || undefined} loading="eager" decoding="async" fetchpriority="high"
+            onLoad={() => setLoadedSrc(web)} />
           {!ok && <span className="lb-spin">cargando…</span>}
         </div>
         <figcaption>

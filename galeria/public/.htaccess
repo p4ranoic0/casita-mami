@@ -7,7 +7,7 @@ ErrorDocument 404 /galeria/404.html
   RewriteCond %{HTTPS} !=on [OR]
   RewriteCond %{HTTP_HOST} ^www\. [NC]
   RewriteRule ^ https://lacasitademami.edu.pe%{REQUEST_URI} [R=301,L,NE]
-  RewriteRule ^$ index.html [L]
+  RewriteRule ^$ index.php [L]
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
@@ -16,6 +16,9 @@ ErrorDocument 404 /galeria/404.html
 
 <IfModule mod_headers.c>
   <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  <FilesMatch "^(?:manifest|albums)\.json$">
     Header set Cache-Control "no-cache"
   </FilesMatch>
   <FilesMatch "\.(?:jpe?g|png|webp|avif|gif|ico|svg|woff2?|ttf|otf)$">

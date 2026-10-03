@@ -13,6 +13,15 @@ export function albumCover(album, i) {
   return FALLBACK[((i % FALLBACK.length) + FALLBACK.length) % FALLBACK.length]
 }
 
+export function albumCoverSrcSet(album) {
+  const photo = album.photos?.find((entry) => entry.web === album.cover)
+  if (!photo?.thumb || !photo.w) return undefined
+  const thumbWidth = Math.min(photo.w, 480)
+  const webWidth = Math.min(photo.w, 2048)
+  if (thumbWidth === webWidth) return undefined
+  return `${asset(photo.thumb)} ${thumbWidth}w, ${asset(photo.web)} ${webWidth}w`
+}
+
 export const countLabel = (n) => (n === 0 ? 'pronto' : n === 1 ? '1 foto' : `${n} fotos`)
 
 // Proporción ancho/alto. Fotos antiguas pueden venir con w/h = 0.

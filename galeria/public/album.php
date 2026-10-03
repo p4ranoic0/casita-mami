@@ -83,4 +83,39 @@ $html = preg_replace_callback('/<meta\b[^>]*>/i', static function (array $match)
     return preg_replace_callback('/\bcontent="[^"]*"/i', static fn (array $content): string => 'content="' . escape($value) . '"', $tag, 1);
 }, $html);
 
+$images = [];
+foreach (array_slice(is_array($album['photos'] ?? null) ? $album['photos'] : [], 0, 10) as $photo) {
+    $web = is_array($photo) ? ($photo['web'] ?? '') : '';
+    if (is_string($web) && preg_match('#^media/[a-zA-Z0-9/_-]+\.(?:jpe?g|png|webp|avif)$#iD', $web)
+        && !str_contains($web, '..')) {
+        $images[] = $origin . '/galeria/' . implode('/', array_map('rawurlencode', explode('/', $web)));
+    }
+}
+$schema = [
+    '@context' => 'https://schema.org',
+    '@graph' => [
+        [
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => [
+                ['@type' => 'ListItem', 'position' => 1, 'name' => 'Inicio', 'item' => $origin . '/'],
+                ['@type' => 'ListItem', 'position' => 2, 'name' => 'Galería', 'item' => $origin . '/galeria/'],
+                ['@type' => 'ListItem', 'position' => 3, 'name' => $title, 'item' => $canonical],
+            ],
+        ],
+        [
+            '@type' => 'ImageGallery',
+            'name' => $title,
+            'description' => (string) ($album['description'] ?? ''),
+            'url' => $canonical,
+            'image' => $images,
+        ],
+    ],
+];
+$json = json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+if ($json !== false) {
+    $json = str_replace('</', '<\\/', $json);
+    $html = preg_replace_callback('/<\/head>/i', static fn (array $match): string =>
+        '<script type="application/ld+json">' . $json . '</script>' . $match[0], $html, 1);
+}
+
 echo $html;
