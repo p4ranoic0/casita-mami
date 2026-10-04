@@ -47,7 +47,10 @@ if ($overview !== []) {
         if (is_string($thumb) && is_file(__DIR__ . '/' . $thumb)) {
             $width = (int) ($first['photos'][0]['w'] ?? 0);
             if ($width > 480) {
-                $srcset = '/galeria/' . $thumb . ' 480w, ' . $webUrl . ' ' . min($width, 2048) . 'w';
+                $mid = $first['photos'][0]['mid'] ?? '';
+                $srcset = '/galeria/' . $thumb . ' 480w, '
+                    . (is_string($mid) && $width > 1080 && is_file(__DIR__ . '/' . $mid) ? '/galeria/' . $mid . ' 1080w, ' : '')
+                    . $webUrl . ' ' . min($width, 2048) . 'w';
             }
         }
         $tag = '<link rel="preload" as="image" href="' . htmlspecialchars($webUrl, ENT_QUOTES, 'UTF-8') . '"';

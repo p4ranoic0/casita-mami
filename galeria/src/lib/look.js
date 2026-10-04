@@ -18,8 +18,11 @@ export function albumCoverSrcSet(album) {
   if (!photo?.thumb || !photo.w) return undefined
   const thumbWidth = Math.min(photo.w, 480)
   const webWidth = Math.min(photo.w, 2048)
-  if (thumbWidth === webWidth) return undefined
-  return `${asset(photo.thumb)} ${thumbWidth}w, ${asset(photo.web)} ${webWidth}w`
+  const midWidth = Math.min(photo.w, 1080)
+  const set = [`${asset(photo.thumb)} ${thumbWidth}w`]
+  if (photo.mid && midWidth > thumbWidth && midWidth < webWidth) set.push(`${asset(photo.mid)} ${midWidth}w`)
+  if (webWidth > thumbWidth) set.push(`${asset(photo.web)} ${webWidth}w`)
+  return set.length > 1 ? set.join(', ') : undefined
 }
 
 export const countLabel = (n) => (n === 0 ? 'pronto' : n === 1 ? '1 foto' : `${n} fotos`)

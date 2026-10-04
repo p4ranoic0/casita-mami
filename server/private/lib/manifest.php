@@ -7,7 +7,7 @@ function photoPaths(string $slug, array $p): array {
     'web'   => "media/$slug/web/{$p['filename']}.jpg",
     'orig'  => "media/$slug/orig/{$p['filename']}.{$p['orig_ext']}",
     'w' => (int)$p['w'], 'h' => (int)$p['h'],
-  ];
+  ] + (is_file(MEDIA_DIR . "/$slug/mid/{$p['filename']}.webp") ? ['mid' => "media/$slug/mid/{$p['filename']}.webp"] : []);
 }
 
 // Escritura atómica: con subidas en paralelo dos procesos pueden regenerar a la

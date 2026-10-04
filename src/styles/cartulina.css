@@ -182,7 +182,7 @@
 .gb-meta{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
 .gb-meta h2{font-size:28px}.gb-card.big .gb-meta h2{font-size:44px}
 .gb-meta>span{font-family:'Gochi Hand',cursive;font-size:20px;white-space:nowrap}
-.gb-card>p{font-size:18px;color:var(--ink2)}
+.gb-card>p{font-size:18px;color:var(--ink)}
 @media(max-width:900px){.gb-grid{grid-template-columns:1fr 1fr}.gb-card.big{grid-column:span 2}}
 @media(max-width:560px){.gb-grid{grid-template-columns:1fr}.gb-card.big{grid-column:auto}.gb-card.big .gb-meta h2{font-size:32px}}
 .gb-band{padding:40px 0 56px}
